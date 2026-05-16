@@ -1,12 +1,12 @@
-p                                                                                                                                                                                      p
-p                                                                                                                                                                                      p
-p                                                                                                                                                                                      p
-p                                                                                                                                                                                      p
-p                                                                                                                                                                                      p
-p                                                                                                                                                                                      p
-p                                                                                                                                                                                      p
-p                                                                                                                                                                                      p
-p                           c                                                                                                                                                          p
-p                          cc                                                                                                                                                          p
-p                         ccc   ccccccc                                                                                                                                                p
-ggggggggggggggggggggggggggggg   gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
+G                                                                                                                                 G
+G                                                                                                                                 G
+G                                                                                                                                 G
+G                                                                                                                                 G
+G                                                                                                                                 G
+G                                                                                                                                 G
+G                                                                                                                                 G
+G                                                                                                                                 G
+G                                                                                                                                 G
+G                                                                                                                                 G
+G      AAAA BBBB CCCC DDDD EEEE FFFF GGGG HHHH IIII                                                                               G
+GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG

@@ -73,7 +73,7 @@ void drawGameWorld( GameWorld *gw ) {
 
     BeginDrawing();
 
-    ClearBackground( WHITE );
+    ClearBackground( PINK );
 
     BeginMode2D(gw->camera);
 

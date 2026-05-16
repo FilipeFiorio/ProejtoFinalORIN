@@ -4,14 +4,26 @@
 #include "Tipos.h"
 #include "Obstaculo.h"
 
+
 void desenharObstaculo(Obstaculo *obstaculo) {
-    DrawRectangleRec(obstaculo->ret, obstaculo->cor);
+    
+    if(obstaculo->textura == NULL) {
+        DrawRectangleRec(obstaculo->ret, obstaculo->cor);
+        return;
+    }
+
+    DrawTexturePro(
+        *obstaculo->textura,
+        obstaculo->fonte,
+        obstaculo->ret,
+        (Vector2) {0},
+        0.0f,
+        WHITE
+    );
 }
 
-void desenharObstaculos(Obstaculo *obstaculos, int quantidade) {
+void destruirObstaculo(Obstaculo *obstaculo) {
 
-    for ( int i = 0; i < quantidade; i++) {
-        desenharObstaculo(&obstaculos[i]);
-    }
+    free(obstaculo);
     
 }

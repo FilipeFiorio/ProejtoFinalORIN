@@ -1,71 +1,70 @@
 #include <stdlib.h>
 #include "raylib/raylib.h"
+#include "ResourceManager.h"
 #include "Tipos.h"
 #include "Mapa.h"
 #include "Obstaculo.h"
 
-Mapa *carregarMapa(const char *caminhoArquivo) {
+Mapa *carregarMapa( const char *caminhoArquivo ) {
 
-    Mapa *novoMapa = (Mapa*) malloc(sizeof(Mapa));
-
+    // aloca um novo mapa
+    Mapa *novoMapa = (Mapa*) malloc( sizeof( Mapa ) );
     novoMapa->elementos = NULL;
     novoMapa->quantidadeElementos = 0;
-    novoMapa->tamanhoElemento = 50;
+    novoMapa->tamanhoElemento = 48;
     novoMapa->linhas = 0;
     novoMapa->colunas = 0;
-
-    char *dadosMapa = LoadFileText(caminhoArquivo);
     
+    // carrega dados do arquivo de texto
+    char *dadosMapa = LoadFileText( caminhoArquivo );
+
+    // marcadores para processamento do mapa
     char *caractereAtual = dadosMapa;
     int linhaAtual = 0;
     int colunaAtual = 0;
 
-    while (*caractereAtual != '\0') {
+    // caractere atual marca inicialmente a primeira posição de dadosMapa
+    // C-strings terminam em '\0', sendo assim, caminhamos caractere por 
+    // caractere até o fim
+    while ( *caractereAtual != '\0' ) {
 
-        if(*caractereAtual == '\n') {
+        // fim de linha?
+        if ( *caractereAtual == '\n' ) {
+
             linhaAtual++;
             colunaAtual = 0;
 
             novoMapa->linhas = linhaAtual;
+
         } else {
 
-            Color cor = BLACK;
-            bool criar = true;
+            bool criar = *caractereAtual != ' ';
+            int deslocamento = *caractereAtual - 'A';
 
-            switch (*caractereAtual) {
-            case 'a':
-                cor = ORANGE;
-                break;
-            case 'g':
-                cor = GREEN;
-                break;
-            case 'p':
-                cor = GRAY;
-                break;
-            case 'c':
-                cor = BROWN;
-                break;
-            default:
-                criar = false;
-                break;
-            }
+            if ( criar ) {
 
-            if (criar) {
-
-                ElementoMapa *el = (ElementoMapa*) malloc(sizeof(ElementoMapa));
+                ElementoMapa *el = (ElementoMapa*) malloc( sizeof( ElementoMapa ) );
 
                 el->obstaculo = (Obstaculo) {
-                    .ret =  {
-                        .x = novoMapa->tamanhoElemento * colunaAtual,
-                        .y = novoMapa->tamanhoElemento * linhaAtual,
-                        .width = novoMapa->tamanhoElemento,
-                        .height = novoMapa->tamanhoElemento,
+                    .ret = { 
+                        .x = novoMapa->tamanhoElemento * colunaAtual, 
+                        .y = novoMapa->tamanhoElemento * linhaAtual, 
+                        .width = novoMapa->tamanhoElemento, 
+                        .height = novoMapa->tamanhoElemento
                     },
-                    .cor = cor
+                    .cor = GRAY,
+                    .fonte = { 
+                        1 + ( novoMapa->tamanhoElemento + 1 ) * deslocamento, 
+                        1, 
+                        novoMapa->tamanhoElemento,
+                        novoMapa->tamanhoElemento
+                    },
+                    .textura = &rm.texturaTerreno
                 };
                 el->proximo = NULL;
 
-                if(novoMapa->elementos == NULL) {
+                // inserção na lista
+                if ( novoMapa->elementos == NULL ) {
                     novoMapa->elementos = el;
                 } else {
                     el->proximo = novoMapa->elementos;
@@ -77,22 +76,20 @@ Mapa *carregarMapa(const char *caminhoArquivo) {
 
             colunaAtual++;
 
-            if(novoMapa->colunas < colunaAtual) {
+            if ( novoMapa->colunas < colunaAtual ) {
                 novoMapa->colunas = colunaAtual;
             }
 
-            
-            
         }
+
         caractereAtual++;
 
-        
-        
     }
 
     novoMapa->linhas++;
-
-    UnloadFileText(dadosMapa);
+    
+    // descarrega os dados
+    UnloadFileText( dadosMapa );
 
     return novoMapa;
 
