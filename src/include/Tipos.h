@@ -19,11 +19,32 @@ typedef struct Jogador {
     float velAndando;
     float velPulo;
     float velMaxQueda;
+    bool noChao;
 } Jogador;
 
+typedef struct Obstaculo {
+    Rectangle ret;
+    Color cor;
+} Obstaculo;
+
+typedef struct ElementoMapa ElementoMapa;
+struct ElementoMapa {
+    Obstaculo obstaculo;
+    ElementoMapa *proximo;
+};
+
+typedef struct Mapa {
+    ElementoMapa *elementos;
+    int quantidadeElementos;
+    float tamanhoElemento;
+    int linhas;
+    int colunas;
+} Mapa;
+
 typedef struct GameWorld {
+    Mapa *mapa;
     Jogador *jogador;
+    Camera2D camera;
     float gravidade;
-    EstadoJogo estadoJogo;
 }GameWorld;
 

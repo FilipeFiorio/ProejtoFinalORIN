@@ -1,9 +1,10 @@
 #pragma once
 
 #include "raylib/raylib.h"
-#include "core/Tipos.h"
+#include "Tipos.h"
 
 Jogador *criarJogador(float x, float y, float largura, float altura, Color cor);
+void entradaJogador(Jogador *j);
 void destruirJogador(Jogador *j);
-void destruirAtualizar(Jogador *j, GameWorld *gw, float delta);
-void destruirDesenhar(Jogador *j);
+void atualizarJogador(Jogador *j, GameWorld *gw, float delta);
+void desenharJogador(Jogador *j);

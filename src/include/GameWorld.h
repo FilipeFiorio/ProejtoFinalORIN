@@ -7,9 +7,7 @@
  */
 #pragma once
 
-typedef struct GameWorld {
-    int dummy;
-} GameWorld;
+#include "Tipos.h"
 
 /**
  * @brief Creates a dinamically allocated GameWorld struct instance.
