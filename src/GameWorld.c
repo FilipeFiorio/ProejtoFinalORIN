@@ -33,8 +33,8 @@ GameWorld* createGameWorld( void ) {
     GameWorld *gw = (GameWorld*) malloc( sizeof( GameWorld ) );
 
     gw->mapa = carregarMapa("resources/mapas/fase01.txt");
-    gw->jogador = criarJogador(GetScreenWidth() / 2, calcularAlturaMapa(gw->mapa) - 150, 50, 50, BLUE);
-    gw->gravidade = 500;
+    gw->jogador = criarJogador(GetScreenWidth() / 2 - 100, calcularAlturaMapa(gw->mapa) - 150, 50, 50, BLUE);
+    gw->gravidade = 600;
 
     gw->camera = (Camera2D) {
         .offset = {0},
@@ -114,8 +114,8 @@ static void atualizarCamera(GameWorld *gw) {
     camera->target.x = jogador->ret.x + jogador->ret.width;
     camera->target.y = jogador->ret.y + jogador->ret.height;
 
-    int minX = GetScreenWidth() / 2;
-    int maxX = calcularLarguraMapa(gw->mapa) - GetScreenWidth() / 2;
+    int minX = GetScreenWidth() / 2 + 50;
+    int maxX = calcularLarguraMapa(gw->mapa) - GetScreenWidth() / 2 - 50;
     int maxY = calcularAlturaMapa(gw->mapa) - GetScreenHeight() / 2;
 
     if(camera->target.x < minX) {

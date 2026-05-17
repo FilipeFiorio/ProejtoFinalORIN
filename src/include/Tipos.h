@@ -17,7 +17,9 @@ typedef struct Jogador {
     Vector2 vel;
     Color cor;
     float velAndando;
+    float velCorrendo;
     float velPulo;
+    float velPuloCorrendo;
     float velMaxQueda;
     bool noChao;
 } Jogador;

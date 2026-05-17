@@ -19,8 +19,10 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
     novoJogador->vel = (Vector2) {0};
     novoJogador->cor = BLUE;
 
-    novoJogador->velAndando = 300;
-    novoJogador->velPulo = -500;
+    novoJogador->velAndando = 225;
+    novoJogador->velCorrendo = 325;
+    novoJogador->velPulo = -425;
+    novoJogador->velPuloCorrendo = -525;
     novoJogador->velMaxQueda = 600;
 
     return novoJogador;
@@ -34,20 +36,22 @@ void destruirJogador(Jogador *j) {
 
 void entradaJogador(Jogador *j) {
     
-    //bool shiftApertado = IsKeyDown(KEY_LEFT_SHIFT);
+    bool shiftApertado = IsKeyDown(KEY_LEFT_SHIFT);
 
     if(IsKeyDown(KEY_A)) {
-        j->vel.x = -j->velAndando;
+        j->vel.x = shiftApertado? -j->velCorrendo : -j->velAndando;
     } else if (IsKeyDown(KEY_D)) {
-        j->vel.x = j->velAndando;
+        j->vel.x = shiftApertado? j->velCorrendo : j->velAndando;
     } else {
         j->vel.x = 0;
     }
 
     if(IsKeyPressed(KEY_SPACE) && j->noChao) {
-        j->vel.y = j->velPulo;
+        j->vel.y = shiftApertado ? j->velPuloCorrendo : j->velPulo;
         j->noChao = false;
     }
+
+    j->noChao = false;
 
 }
 
