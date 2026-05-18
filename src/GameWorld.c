@@ -24,6 +24,8 @@
 
 static void atualizarCamera(GameWorld *gw);
 static void desenharFundo(GameWorld *gw);
+static void verificarMorteJogador(GameWorld *gw);
+static void reiniciarJogo(GameWorld *gw);
 
 /**
  * @brief Creates a dinamically allocated GameWorld struct instance.
@@ -64,6 +66,7 @@ void updateGameWorld( GameWorld *gw, float delta ) {
     entradaJogador(gw->jogador);
     atualizarJogador(gw->jogador, gw, delta);
     atualizarCamera(gw);
+    verificarMorteJogador(gw);
 
 }
 
@@ -128,4 +131,19 @@ static void atualizarCamera(GameWorld *gw) {
         camera->target.y = maxY;
     }
 
+}
+
+static void verificarMorteJogador(GameWorld *gw) {
+
+    Jogador *jogador = gw->jogador;
+    int alturaMapa = calcularAlturaMapa(gw->mapa);
+
+    if(jogador->ret.y > alturaMapa) {
+        reiniciarJogo(gw);
+    }
+}
+
+static void reiniciarJogo(GameWorld *gw) {
+    gw->jogador->ret.x = GetScreenWidth() / 2 - 100;
+    gw->jogador->ret.y = calcularAlturaMapa(gw->mapa) - 100;
 }
