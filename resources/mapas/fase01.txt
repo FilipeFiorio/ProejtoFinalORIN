@@ -1,11 +1,11 @@
-G                                                                                                                                                                
-G                                                                                                                                                                                                         G
-G                         MMMMMMM                                                                               MMMMMM                                                                                    G
-G                                                                                                                                                                                                         G
-G                                                                                                      MMMMMM                                                                                             G
-G                                                                                         MMMMMMM                         MMMMMM                                                                          G
-G           P    P                                                              G                                                                                                NAAAAAAAO                G
-G          NR    QO         G          G                              G         G                                                                                                DFFFFFFFE        Z       G
-G         NBE    DCO        G          G                     G        G         G                                                    MMMMMM                          MMM         DFFFFFFFCAAAAAAAAAAAAAAAAG
-G        NBFE    DFCO       G          G             G       G        G         G                                                                 NAAAAAAAAAAO                   DFFFFFFFFFFFFFFFFFFFFFFFFG
-GAAAAAAAABFFE    DFFCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO                                                                DFFFFFFFFFFE                   DFFFFFFFFFFFFFFFFFFFFFFFFG
+G                                                                                                                                                                        
+G                                                                                                                                                                                                                 G
+G                                 MMMMMMM                                                                               MMMMMM                                                                                    G
+G                                                                                                                                                                                                                 G
+G                                                                                                              MMMMMM                                                                                             G
+G                                                                                                 MMMMMMM                         MMMMMM                                                                          G
+G                   P    P                                                              G                                                                                                NAAAAAAAO                G
+G                  NR    QO         G          G                              G         G                                                                                                DFFFFFFFE        Z       G
+G                 NBE    DCO        G          G                     G        G         G                                                    MMMMMM                          MMM         DFFFFFFFCAAAAAAAAAAAAAAAAG
+G                NBFE    DFCO       G          G             G       G        G         G                                                                 NAAAAAAAAAAO                   DFFFFFFFFFFFFFFFFFFFFFFFFG
+GAAAAAAAAAAAAAAAABFFE    DFFCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO                                                                DFFFFFFFFFFE                   DFFFFFFFFFFFFFFFFFFFFFFFFG
