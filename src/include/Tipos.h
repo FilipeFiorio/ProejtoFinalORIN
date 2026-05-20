@@ -28,7 +28,8 @@ typedef struct Jogador {
 typedef struct Inimigo {
     Rectangle ret;
     Color cor;
-    float velX;
+    Vector2 vel;
+    float velMaxQueda;
     bool estaVivo;
 } Inimigo;
 

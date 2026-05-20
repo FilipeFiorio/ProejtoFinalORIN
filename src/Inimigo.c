@@ -4,7 +4,8 @@
 #include "Tipos.h"
 #include "Inimigo.h"
 
-static void resolverColisaoMapaX(Inimigo *inimigo, Mapa *m);
+static void resolverColisaoinimigoMapaX(Inimigo *i, Mapa *m);
+static void resolverColisaoInimigoMapaY( Inimigo *i, Mapa *m);
 
 Inimigo *criarInimigo(float x, float y, float largura, float altura, Color cor) {
 
@@ -15,7 +16,9 @@ Inimigo *criarInimigo(float x, float y, float largura, float altura, Color cor) 
     novoInimigo->ret.width = largura;
     novoInimigo->ret.height = altura;
 
-    novoInimigo->velX = 150;
+    novoInimigo->vel.x = 150;
+    novoInimigo->vel.y = 0;
+    novoInimigo->velMaxQueda = 600;
     
     novoInimigo->cor = cor;
 
@@ -27,8 +30,15 @@ Inimigo *criarInimigo(float x, float y, float largura, float altura, Color cor) 
 
 void atualizarInimigo(Inimigo *inimigo, GameWorld *gw, float delta) {
 
-    inimigo->ret.x += inimigo->velX * delta;
-    resolverColisaoMapaX(inimigo, gw->mapa);
+    if(inimigo->estaVivo) {
+        inimigo->ret.x += inimigo->vel.x * delta;
+        resolverColisaoinimigoMapaX(inimigo, gw->mapa);
+
+        inimigo->vel.y += gw->gravidade * delta;
+
+        inimigo->ret.y += inimigo->vel.y * delta;
+        resolverColisaoInimigoMapaY(inimigo, gw->mapa);
+    }
 
 }
 
@@ -43,11 +53,13 @@ void destruirInimigo(Inimigo *inimigo) {
 
 void desenharInimigo(Inimigo *inimigo) {
 
-    DrawRectangleRec(inimigo->ret, inimigo->cor);
+    if(inimigo->estaVivo) {
+        DrawRectangleRec(inimigo->ret, inimigo->cor);
+    }
 
 }
 
-static void resolverColisaoMapaX(Inimigo *i, Mapa *m) {
+static void resolverColisaoinimigoMapaX(Inimigo *i, Mapa *m) {
 
     ElementoMapa *el = m->elementos;
 
@@ -62,7 +74,7 @@ static void resolverColisaoMapaX(Inimigo *i, Mapa *m) {
                 i->ret.x = o->ret.x + o->ret.width;
             }
                 
-            i->velX = -i->velX;
+            i->vel.x = -i->vel.x;
             
         }
         
@@ -71,5 +83,28 @@ static void resolverColisaoMapaX(Inimigo *i, Mapa *m) {
 
     }
 
+
+}
+
+static void resolverColisaoInimigoMapaY( Inimigo *i, Mapa *m ) {
+
+    ElementoMapa *el = m->elementos;
+
+    while ( el != NULL ) {
+
+        Obstaculo *o = &el->obstaculo;
+
+        if ( CheckCollisionRecs( i->ret, o->ret ) ) {
+            if ( i->ret.y + i->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {
+                i->ret.y = o->ret.y - i->ret.height;
+            } else {
+                i->ret.y = o->ret.y + o->ret.height;
+            }
+            i->vel.y = 0;
+        }
+
+        el = el->proximo;
+
+    }
 
 }

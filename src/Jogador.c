@@ -7,9 +7,6 @@
 
 static void resolverColisaoJogadorMapaX( Jogador *j, Mapa *mapa );
 static void resolverColisaoJogadorMapaY( Jogador *j, Mapa *mapa );
-static void verificarJogadorForaMapa(GameWorld *gw);
-static void verificarColisaoJogadorInimigo(GameWorld *gw);
-
 
 Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) {
 
@@ -72,7 +69,7 @@ void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
     if(j->vel.y > j->velMaxQueda) {
         j->vel.y = j->velMaxQueda;  
     } 
-    j->ret.y += j->vel.y *delta;   
+    j->ret.y += j->vel.y * delta;   
     resolverColisaoJogadorMapaY(gw->jogador, gw->mapa);
 
 }
@@ -115,7 +112,7 @@ static void resolverColisaoJogadorMapaY( Jogador *j, Mapa *mapa ) {
         if ( CheckCollisionRecs( j->ret, o->ret ) ) {
             if ( j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {
                 j->ret.y = o->ret.y - j->ret.height;
-                j->noChao = true;
+                j->noChao = true;   
             } else {
                 j->ret.y = o->ret.y + o->ret.height;
             }

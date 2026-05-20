@@ -61,13 +61,14 @@ void updateGameWorld( GameWorld *gw, float delta ) {
 
     entradaJogador(gw->jogador);
     atualizarJogador(gw->jogador, gw, delta);
-    if(gw->inimigo->estaVivo) {
-        atualizarInimigo(gw->inimigo, gw, delta);
-    }
-    atualizarCamera(gw);
-    verificarGameOver(gw);
     verificarMorteJogador(gw);
     verificarColisaoJogadorInimigo(gw);
+
+    atualizarInimigo(gw->inimigo, gw, delta);
+    
+    atualizarCamera(gw);
+
+    verificarGameOver(gw);
 
 }
 
@@ -83,12 +84,13 @@ void drawGameWorld( GameWorld *gw ) {
     BeginMode2D(gw->camera);
 
     desenharFundo(gw);
+
     desenharMapa(gw->mapa);
+
     desenharJogador(gw->jogador);
 
-    if(gw->inimigo->estaVivo) {
-        desenharInimigo(gw->inimigo);
-    }
+
+    desenharInimigo(gw->inimigo);
 
     EndMode2D();
 
@@ -187,7 +189,7 @@ static void inicializarGW(GameWorld *gw) {
     gw->mapa = carregarMapa("resources/mapas/fase01.txt");
     // Apenas um placeholder para testes
     gw->jogador = criarJogador(GetScreenWidth() / 2 - 100, calcularAlturaMapa(gw->mapa) - 150, 50, 50, BLUE);
-    gw->inimigo = criarInimigo(20, 430, 50, 50, RED );
+    gw->inimigo = criarInimigo(20, calcularAlturaMapa(gw->mapa) - 150, 50, 50, RED);
     gw->gravidade = 600;
 
     gw->camera = (Camera2D) {
@@ -199,18 +201,6 @@ static void inicializarGW(GameWorld *gw) {
 
 }
 
-static void verificarJogadorForaMapa(GameWorld *gw) {
-
-    Jogador *jogador = gw->jogador;
-    int alturaMapa = calcularAlturaMapa(gw->mapa);
-
-    if(jogador->ret.y > alturaMapa) {
-        jogador->vidas--; 
-        reiniciarJogo(gw);
-        return;
-    }
-
-}
 
 static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
