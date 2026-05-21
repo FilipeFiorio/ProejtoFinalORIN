@@ -59,13 +59,14 @@ void desenharInimigo(Inimigo *inimigo) {
 
 }
 
+// colisao no eixo x iguais ao jogador, porem ao colidir num obstáculo inverte a direção
 static void resolverColisaoinimigoMapaX(Inimigo *i, Mapa *m) {
 
-    ElementoMapa *el = m->elementos;
+    ElementoMapa *el = m->obstaculos;
 
     while(el != NULL) {
 
-        Obstaculo *o = &el->obstaculo;
+        Obstaculo *o = (Obstaculo*) el->objeto;
 
         if(CheckCollisionRecs(i->ret, o->ret)) {
             if(i->ret.x + i->ret.width / 2 < o->ret.x + o->ret.width / 2) {
@@ -86,18 +87,19 @@ static void resolverColisaoinimigoMapaX(Inimigo *i, Mapa *m) {
 
 }
 
+// todo: verificar se há chao para continuar andando, se nao houver inverter direção
 static void resolverColisaoInimigoMapaY( Inimigo *i, Mapa *m ) {
 
-    ElementoMapa *el = m->elementos;
+    ElementoMapa *el = m->obstaculos;
 
     while ( el != NULL ) {
 
-        Obstaculo *o = &el->obstaculo;
+        Obstaculo *o = (Obstaculo*) el->objeto;
 
         if ( CheckCollisionRecs( i->ret, o->ret ) ) {
             if ( i->ret.y + i->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {
                 i->ret.y = o->ret.y - i->ret.height;
-            } else {
+            } else { //não precisa
                 i->ret.y = o->ret.y + o->ret.height;
             }
             i->vel.y = 0;

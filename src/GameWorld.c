@@ -61,11 +61,10 @@ void updateGameWorld( GameWorld *gw, float delta ) {
 
     entradaJogador(gw->jogador);
     atualizarJogador(gw->jogador, gw, delta);
+    atualizarMapa(gw->mapa, gw, delta);
     verificarMorteJogador(gw);
     verificarColisaoJogadorInimigo(gw);
 
-    atualizarInimigo(gw->inimigo, gw, delta);
-    
     atualizarCamera(gw);
 
     verificarGameOver(gw);
@@ -88,9 +87,6 @@ void drawGameWorld( GameWorld *gw ) {
     desenharMapa(gw->mapa);
 
     desenharJogador(gw->jogador);
-
-
-    desenharInimigo(gw->inimigo);
 
     EndMode2D();
 
@@ -174,7 +170,6 @@ static void verificarGameOver(GameWorld *gw) {
 static void reiniciarJogo(GameWorld *gw) {
 
     destruirJogador(gw->jogador);
-    destruirInimigo(gw->inimigo);
     destruirMapa(gw->mapa);
 
     inicializarGW(gw);
@@ -184,12 +179,8 @@ static void reiniciarJogo(GameWorld *gw) {
 
 static void inicializarGW(GameWorld *gw) {
 
-    // Todos os valores para a criação dos inimigos foram conseguindo usando a posicao do jogador;
-
     gw->mapa = carregarMapa("resources/mapas/fase01.txt");
-    // Apenas um placeholder para testes
     gw->jogador = criarJogador(GetScreenWidth() / 2 - 100, calcularAlturaMapa(gw->mapa) - 150, 50, 50, BLUE);
-    gw->inimigo = criarInimigo(20, calcularAlturaMapa(gw->mapa) - 150, 50, 50, RED);
     gw->gravidade = 600;
 
     gw->camera = (Camera2D) {
@@ -205,23 +196,32 @@ static void inicializarGW(GameWorld *gw) {
 static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
     Jogador *j = gw->jogador;
-    Inimigo *i = gw->inimigo;
+    ElementoMapa *el = gw->mapa->inimigos;
 
     // Atualmente verifica apenas se há colisão pela esquerda, direita e por cima
     // por cima apenas ve se a vel.x é maior que zero
     // se for > 0 o jogador está em cima do inimigo
-    if(CheckCollisionRecs(j->ret, i->ret) && gw->inimigo->estaVivo) {
-        if(j->vel.y > 0) {
-            i->estaVivo = false;         
-        } else {
-            if(j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                j->ret.x = i->ret.x + i->ret.width;
-                j->vidas--;
-            } else if(j->ret.x + j->ret.width / 2 < i->ret.x + i->ret.width / 2 ) {
-                j->ret.x = i->ret.x - i->ret.width;
-                j->vidas--;
+
+    while (el != NULL) {
+
+        Inimigo *i = (Inimigo*) el->objeto;
+
+        if(CheckCollisionRecs(j->ret, i->ret) && i->estaVivo) {
+            if(j->vel.y > 0) {
+                i->estaVivo = false;         
+            } else {
+                if(j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
+                    j->ret.x = i->ret.x + i->ret.width;
+                    j->vidas--;
+                } else if(j->ret.x + j->ret.width / 2 < i->ret.x + i->ret.width / 2 ) {
+                    j->ret.x = i->ret.x - i->ret.width;
+                    j->vidas--;
+                }
             }
+            return;
         }
+
+        el = el->proximo;
     }
 
 }

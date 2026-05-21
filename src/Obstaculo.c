@@ -22,6 +22,18 @@ void desenharObstaculo(Obstaculo *obstaculo) {
     );
 }
 
+Obstaculo *criarObstaculo(Rectangle ret, Rectangle fonte, Texture2D *textura, Color cor) {
+
+    Obstaculo *novoObstaculo = (Obstaculo*) malloc(sizeof(Obstaculo));
+
+    novoObstaculo->ret = ret;
+    novoObstaculo->fonte = fonte;
+    novoObstaculo->textura = textura;   
+    novoObstaculo->cor = cor;
+
+    return novoObstaculo;
+}
+
 void destruirObstaculo(Obstaculo *obstaculo) {
 
     free(obstaculo);

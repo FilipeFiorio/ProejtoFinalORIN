@@ -80,11 +80,11 @@ void desenharJogador(Jogador *j) {
 
 static void resolverColisaoJogadorMapaX( Jogador *j, Mapa *mapa ) {
 
-    ElementoMapa *el = mapa->elementos;
+    ElementoMapa *el = mapa->obstaculos;
 
     while ( el != NULL ) {
 
-        Obstaculo *o = &el->obstaculo;
+         Obstaculo *o = (Obstaculo*) el->objeto;
 
         if ( CheckCollisionRecs( j->ret, o->ret ) ) {
             if ( j->ret.x + j->ret.width / 2 < o->ret.x + o->ret.width / 2 ) {
@@ -103,11 +103,11 @@ static void resolverColisaoJogadorMapaX( Jogador *j, Mapa *mapa ) {
 
 static void resolverColisaoJogadorMapaY( Jogador *j, Mapa *mapa ) {
 
-    ElementoMapa *el = mapa->elementos;
+    ElementoMapa *el = mapa->obstaculos;
 
     while ( el != NULL ) {
 
-        Obstaculo *o = &el->obstaculo;
+        Obstaculo *o = (Obstaculo*) el->objeto;
 
         if ( CheckCollisionRecs( j->ret, o->ret ) ) {
             if ( j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {

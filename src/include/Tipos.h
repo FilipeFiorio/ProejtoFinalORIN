@@ -12,6 +12,11 @@ typedef enum EstadoJogo {
 
 } EstadoJogo;
 
+typedef enum TipoElementoMapa {
+    ELEMENTO_MAPA_OBSTACULO,
+    ELEMENTO_MAPA_INIMIGO
+} TipoElementoMapa;
+
 typedef struct Jogador {
     Rectangle ret;
     Vector2 vel;
@@ -42,13 +47,18 @@ typedef struct Obstaculo {
 
 typedef struct ElementoMapa ElementoMapa;
 struct ElementoMapa {
-    Obstaculo obstaculo;
+    void *objeto;
+    TipoElementoMapa tipo;
     ElementoMapa *proximo;
 };
 
 typedef struct Mapa {
-    ElementoMapa *elementos;
-    int quantidadeElementos;
+    ElementoMapa *obstaculos;
+    int quantidadeObstaculos;
+
+    ElementoMapa *inimigos;
+    int quantidadeInimigos;
+
     float tamanhoElemento;
     int linhas;
     int colunas;
@@ -58,7 +68,6 @@ typedef struct GameWorld {
     Mapa *mapa;
     Jogador *jogador;
     Camera2D camera;
-    Inimigo *inimigo;
     float gravidade;
 }GameWorld;
 

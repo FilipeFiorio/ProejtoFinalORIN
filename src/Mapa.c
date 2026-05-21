@@ -4,91 +4,109 @@
 #include "Tipos.h"
 #include "Mapa.h"
 #include "Obstaculo.h"
+#include "Inimigo.h"
+
+static void inserirObstaculo(Mapa *m, ElementoMapa *o);
+static void inserirInimigo(Mapa *m, ElementoMapa *i);
 
 Mapa *carregarMapa( const char *caminhoArquivo ) {
 
-    // aloca um novo mapa
     Mapa *novoMapa = (Mapa*) malloc( sizeof( Mapa ) );
-    novoMapa->elementos = NULL;
-    novoMapa->quantidadeElementos = 0;
+    novoMapa->obstaculos = NULL;
+    novoMapa->quantidadeObstaculos = 0;
+    novoMapa->inimigos = NULL;
+    novoMapa->quantidadeInimigos = 0;
     novoMapa->tamanhoElemento = 48;
     novoMapa->linhas = 0;
     novoMapa->colunas = 0;
     
-    // carrega dados do arquivo de texto
     char *dadosMapa = LoadFileText( caminhoArquivo );
-
-    // marcadores para processamento do mapa
     char *caractereAtual = dadosMapa;
     int linhaAtual = 0;
     int colunaAtual = 0;
 
-    // caractere atual marca inicialmente a primeira posição de dadosMapa
-    // C-strings terminam em '\0', sendo assim, caminhamos caractere por 
-    // caractere até o fim
     while ( *caractereAtual != '\0' ) {
 
-        // fim de linha?
         if ( *caractereAtual == '\n' ) {
 
             linhaAtual++;
             colunaAtual = 0;
-
             novoMapa->linhas = linhaAtual;
 
         } else {
 
-            bool criar = *caractereAtual != ' ';
-            int deslocamento = *caractereAtual - 'A';
+            if(*caractereAtual != ' ') {
 
-            if ( criar ) {
-
-                ElementoMapa *el = (ElementoMapa*) malloc( sizeof( ElementoMapa ) );
-
-                el->obstaculo = (Obstaculo) {
-                    .ret = { 
-                        .x = novoMapa->tamanhoElemento * colunaAtual, 
-                        .y = novoMapa->tamanhoElemento * linhaAtual, 
-                        .width = novoMapa->tamanhoElemento, 
-                        .height = novoMapa->tamanhoElemento
-                    },
-                    .cor = GRAY,
-                    .fonte = { 
-                        1 + ( novoMapa->tamanhoElemento + 1 ) * deslocamento, 
-                        1, 
-                        novoMapa->tamanhoElemento,
-                        novoMapa->tamanhoElemento
-                    },
-                    .textura = &rm.texturaTerreno
-                };
+                ElementoMapa *el = (ElementoMapa*) malloc(sizeof(ElementoMapa));
                 el->proximo = NULL;
 
-                // inserção na lista
-                if ( novoMapa->elementos == NULL ) {
-                    novoMapa->elementos = el;
+                if('A' <= *caractereAtual && *caractereAtual <= 'Z') {
+
+                    int deslocamento = *caractereAtual - 'A';
+
+                    el->objeto = criarObstaculo(
+                        (Rectangle) {
+                            .x = colunaAtual * novoMapa->tamanhoElemento,
+                            .y = linhaAtual * novoMapa->tamanhoElemento,
+                            .width = novoMapa->tamanhoElemento,
+                            .height = novoMapa->tamanhoElemento
+                        },
+                        (Rectangle) {
+                            .x = 1 + (novoMapa->tamanhoElemento + 1) * deslocamento,
+                            .y = 1,
+                            .width = novoMapa->tamanhoElemento,
+                            .height = novoMapa->tamanhoElemento
+                        },
+                        &rm.texturaTerreno,
+                        GRAY
+                    );
+                    el->tipo = ELEMENTO_MAPA_OBSTACULO;
+                    inserirObstaculo(novoMapa, el);
+
+                } else if('1' <= *caractereAtual && *caractereAtual <= '9') {
+
+                    Inimigo *inimigo = NULL;
+
+                    switch(*caractereAtual) {
+                        case '1':
+                            inimigo = criarInimigo(
+                                colunaAtual * novoMapa->tamanhoElemento,
+                                linhaAtual * novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                RED
+                            );
+                            el->objeto = inimigo;
+                            el->tipo = ELEMENTO_MAPA_INIMIGO;
+                            break;
+                        default:
+                            free(el); // evita leak para caracteres não tratados
+                            el = NULL;
+                            break;
+                    }
+
+                    if(el != NULL) {
+                        inserirInimigo(novoMapa, el);
+                    }
+
                 } else {
-                    el->proximo = novoMapa->elementos;
-                    novoMapa->elementos = el;
+                    free(el); // caractere desconhecido, descarta
                 }
-                novoMapa->quantidadeElementos++;
 
             }
 
             colunaAtual++;
-
-            if ( novoMapa->colunas < colunaAtual ) {
+            if(novoMapa->colunas < colunaAtual) {
                 novoMapa->colunas = colunaAtual;
             }
 
         }
 
         caractereAtual++;
-
     }
 
     novoMapa->linhas++;
     
-    // descarrega os dados
     UnloadFileText( dadosMapa );
 
     return novoMapa;
@@ -96,27 +114,38 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
 }
 
 void destruirMapa(Mapa *m) {
-
-    ElementoMapa *el = m->elementos;
-
-    while (el != NULL) {
-        ElementoMapa *temp = el;    
-        el = el->proximo;
-        free(temp);
-    }
-    
+   //fazer 
 }
 
 void desenharMapa(Mapa *m) {
     
-    ElementoMapa *el = m->elementos;
+    ElementoMapa *el = NULL;
 
-    while (el != NULL){
-        Obstaculo *o = &el->obstaculo;
-        desenharObstaculo(o);
+    el = m->obstaculos;
+    
+    while(el != NULL) {
+        desenharObstaculo((Obstaculo*) el->objeto);
+        el = el->proximo;
+    }
+
+    el = m->inimigos;
+    while(el != NULL) {
+        desenharInimigo((Inimigo*) el->objeto);
         el = el->proximo;
     }
     
+}
+
+void atualizarMapa(Mapa *m,GameWorld *gw, float delta ) {
+
+    ElementoMapa *el = NULL;
+
+    el = m->inimigos;
+    while(el != NULL) {
+        atualizarInimigo((Inimigo*) el->objeto, gw, delta);
+        el = el->proximo;
+    }
+
 }
 
 int calcularLarguraMapa(Mapa *m) {
@@ -129,4 +158,26 @@ int calcularAlturaMapa(Mapa *m) {
 
     return (int) (m->linhas * m->tamanhoElemento);
 
+}
+
+static void inserirObstaculo(Mapa *m, ElementoMapa *o) {
+
+    if(m->obstaculos == NULL) {
+        m->obstaculos = o;
+    } else {
+        o->proximo = m->obstaculos;
+        m->obstaculos = o;
+    }
+    m->quantidadeObstaculos++;
+}
+
+static void inserirInimigo(Mapa *m, ElementoMapa *i) {
+
+    if(m->inimigos == NULL) {
+        m->inimigos = i;
+    } else {
+        i->proximo = m->inimigos;
+        m->inimigos = i;
+    }
+    m->quantidadeInimigos++;
 }
