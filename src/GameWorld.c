@@ -50,7 +50,6 @@ GameWorld* createGameWorld( void ) {
  * @brief Destroys a GameWindow object and its dependecies.
  */
 void destroyGameWorld( GameWorld *gw ) {
-    destruirJogador(gw->jogador);
     destruirMapa(gw->mapa);
     free( gw );
 }
@@ -60,12 +59,10 @@ void destroyGameWorld( GameWorld *gw ) {
  */
 void updateGameWorld( GameWorld *gw, float delta ) {
 
-    entradaJogador(gw->jogador);
-    atualizarJogador(gw->jogador, gw, delta);
     atualizarMapa(gw->mapa, gw, delta);
     verificarMorteJogador(gw);
-    verificarColisaoJogadorInimigo(gw);
-    verificarColisaoJogadorItem(gw);
+    //verificarColisaoJogadorInimigo(gw);
+    //verificarColisaoJogadorItem(gw);
 
     atualizarCamera(gw);
 
@@ -88,20 +85,19 @@ void drawGameWorld( GameWorld *gw ) {
 
     desenharMapa(gw->mapa);
 
-    desenharJogador(gw->jogador);
 
     EndMode2D();
 
     char textoVidas[10];
-    sprintf(textoVidas, "vidas: %d", gw->jogador->vidas);
+    sprintf(textoVidas, "vidas: %d", gw->mapa->jogador->vidas);
     DrawText(textoVidas,10, 10, 20, WHITE);
 
     char textoMoedas[10];
-    sprintf(textoMoedas, "moedas: %d", gw->jogador->moedas);
+    sprintf(textoMoedas, "moedas: %d", gw->mapa->jogador->moedas);
     DrawText(textoMoedas,100, 10, 20, WHITE);
     
     char posJogador[30];
-    sprintf(posJogador, "posicao: x: %d, y: %d", (int) gw->jogador->ret.x, (int) gw->jogador->ret.y);
+    sprintf(posJogador, "posicao: x: %d, y: %d", (int) gw->mapa->jogador->ret.x, (int) gw->mapa->jogador->ret.y);
     DrawText(posJogador,10, 30, 20, BLACK);
 
     EndDrawing();
@@ -125,7 +121,7 @@ static void desenharFundo( GameWorld *gw ) {
 
 static void atualizarCamera(GameWorld *gw) {
 
-    Jogador *jogador = gw->jogador;
+    Jogador *jogador = gw->mapa->jogador;
     Camera2D *camera = &gw->camera;
 
     camera->offset.x = GetScreenWidth() / 2;
@@ -152,7 +148,7 @@ static void atualizarCamera(GameWorld *gw) {
 
 static void verificarMorteJogador(GameWorld *gw) {
 
-    Jogador *jogador = gw->jogador;
+    Jogador *jogador = gw->mapa->jogador;
     int alturaMapa = calcularAlturaMapa(gw->mapa);
 
     if(jogador->ret.y > alturaMapa) {
@@ -166,7 +162,7 @@ static void verificarMorteJogador(GameWorld *gw) {
 //no futuro usar estados do jogo --> ESTADO_JOGO_GAME_OVER
 static void verificarGameOver(GameWorld *gw) {
 
-    if(gw->jogador->vidas <= 0) {
+    if(gw->mapa->jogador->vidas <= 0) {
         //ir para a tela de gameOver
         //Opcao de sair do jogo, ou tentar de novo
     }
@@ -175,7 +171,7 @@ static void verificarGameOver(GameWorld *gw) {
 
 static void reiniciarJogo(GameWorld *gw) {
 
-    destruirJogador(gw->jogador);
+    destruirJogador(gw->mapa->jogador);
     destruirMapa(gw->mapa);
 
     inicializarGW(gw);
@@ -186,7 +182,6 @@ static void reiniciarJogo(GameWorld *gw) {
 static void inicializarGW(GameWorld *gw) {
 
     gw->mapa = carregarMapa("resources/mapas/fase01.txt");
-    gw->jogador = criarJogador(GetScreenWidth() / 2 - 100, calcularAlturaMapa(gw->mapa) - 150, 50, 50, BLUE);
     gw->gravidade = 600;
 
     gw->camera = (Camera2D) {
@@ -197,59 +192,3 @@ static void inicializarGW(GameWorld *gw) {
     };
 
 }
-
-
-static void verificarColisaoJogadorInimigo(GameWorld *gw) {
-
-    Jogador *j = gw->jogador;
-    ElementoMapa *el = gw->mapa->inimigos;
-
-    // Atualmente verifica apenas se há colisão pela esquerda, direita e por cima
-    // por cima apenas ve se a vel.x é maior que zero
-    // se for > 0 o jogador está em cima do inimigo
-
-    while (el != NULL) {
-
-        Inimigo *i = (Inimigo*) el->objeto;
-
-        if(CheckCollisionRecs(j->ret, i->ret) && i->estaVivo) {
-            if(j->vel.y > 0) {
-                i->estaVivo = false;  
-                j->vel.y = j->velPulo * 0.75;   
-            } else {
-                if(j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                    j->ret.x = i->ret.x + i->ret.width;
-                    j->vidas--;
-                } else if(j->ret.x + j->ret.width / 2 < i->ret.x + i->ret.width / 2 ) {
-                    j->ret.x = i->ret.x - i->ret.width;
-                    j->vidas--;
-                }
-            }
-            return;
-        }
-
-        el = el->proximo;
-    }
-
-}
-
-static void verificarColisaoJogadorItem(GameWorld *gw) {
-
-    Jogador *j = gw->jogador;
-    ElementoMapa *el = gw->mapa->itens;
-
-    while(el != NULL) {
-
-        Item *i = (Item*) el->objeto;
-
-        if(CheckCollisionRecs(j->ret, i->ret) && i->ativo) {
-            i->ativo = false;
-            j->moedas++;
-        }
-
-        el = el->proximo;
-    }
-
-}
-
-

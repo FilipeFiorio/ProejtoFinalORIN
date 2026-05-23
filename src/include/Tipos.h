@@ -14,7 +14,8 @@ typedef enum EstadoJogo {
 typedef enum TipoElementoMapa {
     ELEMENTO_MAPA_OBSTACULO,
     ELEMENTO_MAPA_INIMIGO,
-    ELEMENTO_MAPA_ITEM
+    ELEMENTO_MAPA_ITEM,
+    ELEMENTO_MAPA_JOGADOR
 } TipoElementoMapa;
 
 typedef struct Jogador {
@@ -70,6 +71,8 @@ typedef struct Mapa {
     ElementoMapa *itens;
     int quantidadeItens;
 
+    Jogador *jogador;
+
     float tamanhoElemento;
     int linhas;
     int colunas;
@@ -77,7 +80,6 @@ typedef struct Mapa {
 
 typedef struct GameWorld {
     Mapa *mapa;
-    Jogador *jogador;
     Camera2D camera;
     float gravidade;
 }GameWorld;

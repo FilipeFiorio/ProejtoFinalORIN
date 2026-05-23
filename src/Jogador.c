@@ -7,6 +7,8 @@
 
 static void resolverColisaoJogadorMapaX( Jogador *j, Mapa *mapa );
 static void resolverColisaoJogadorMapaY( Jogador *j, Mapa *mapa );
+static void verificarColisaoJogadorItem(GameWorld *gw);
+static void verificarColisaoJogadorInimigo(GameWorld *gw);
 
 Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) {
 
@@ -63,7 +65,7 @@ void entradaJogador(Jogador *j) {
 void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
 
     j->ret.x += j->vel.x * delta;
-    resolverColisaoJogadorMapaX(gw->jogador, gw->mapa);
+    resolverColisaoJogadorMapaX(gw->mapa->jogador, gw->mapa);
     
     j->vel.y += gw->gravidade * delta;
     
@@ -71,7 +73,10 @@ void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
         j->vel.y = j->velMaxQueda;  
     } 
     j->ret.y += j->vel.y * delta;   
-    resolverColisaoJogadorMapaY(gw->jogador, gw->mapa);
+    resolverColisaoJogadorMapaY(gw->mapa->jogador, gw->mapa);
+
+    verificarColisaoJogadorInimigo(gw);
+    verificarColisaoJogadorItem(gw);
 
 }
 
@@ -122,6 +127,59 @@ static void resolverColisaoJogadorMapaY( Jogador *j, Mapa *mapa ) {
 
         el = el->proximo;
 
+    }
+
+}
+
+static void verificarColisaoJogadorItem(GameWorld *gw) {
+
+    Jogador *j = gw->mapa->jogador;
+    ElementoMapa *el = gw->mapa->itens;
+
+    while(el != NULL) {
+
+        Item *i = (Item*) el->objeto;
+
+        if(CheckCollisionRecs(j->ret, i->ret) && i->ativo) {
+            i->ativo = false;
+            j->moedas++;
+        }
+
+        el = el->proximo;
+    }
+
+}
+
+static void verificarColisaoJogadorInimigo(GameWorld *gw) {
+
+    Jogador *j = gw->mapa->jogador;
+    ElementoMapa *el = gw->mapa->inimigos;
+
+    // Atualmente verifica apenas se há colisão pela esquerda, direita e por cima
+    // por cima apenas ve se a vel.x é maior que zero
+    // se for > 0 o jogador está em cima do inimigo
+
+    while (el != NULL) {
+
+        Inimigo *i = (Inimigo*) el->objeto;
+
+        if(CheckCollisionRecs(j->ret, i->ret) && i->estaVivo) {
+            if(j->vel.y > 0) {
+                i->estaVivo = false;  
+                j->vel.y = j->velPulo * 0.75;   
+            } else {
+                if(j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
+                    j->ret.x = i->ret.x + i->ret.width;
+                    j->vidas--;
+                } else if(j->ret.x + j->ret.width / 2 < i->ret.x + i->ret.width / 2 ) {
+                    j->ret.x = i->ret.x - i->ret.width;
+                    j->vidas--;
+                }
+            }
+            return;
+        }
+
+        el = el->proximo;
     }
 
 }

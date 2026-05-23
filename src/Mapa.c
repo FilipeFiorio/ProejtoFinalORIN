@@ -6,6 +6,7 @@
 #include "Obstaculo.h"
 #include "Inimigo.h"
 #include "Item.h"
+#include "Jogador.h"
 
 static void inserirObstaculo(Mapa *m, ElementoMapa *o);
 static void inserirInimigo(Mapa *m, ElementoMapa *i);
@@ -23,6 +24,8 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
 
     novoMapa->itens = NULL;
     novoMapa->quantidadeItens = 0;
+
+    novoMapa->jogador = NULL;
     
     novoMapa->tamanhoElemento = 48;
     novoMapa->linhas = 0;
@@ -116,6 +119,21 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
                     }
 
                     inserirItem(novoMapa, el);
+
+                } else if(*caractereAtual == '@') {
+
+                    Jogador *jogador = criarJogador(
+                        colunaAtual * novoMapa->tamanhoElemento,
+                        linhaAtual * novoMapa->tamanhoElemento,
+                        novoMapa->tamanhoElemento,
+                        novoMapa->tamanhoElemento,
+                        BLUE
+                    );
+
+                    if(novoMapa->jogador == NULL) {
+                        novoMapa->jogador = jogador;
+                    }
+
                 }
 
             }
@@ -164,6 +182,10 @@ void desenharMapa(Mapa *m) {
         desenharItem((Item*) el->objeto);
         el = el->proximo;
     }
+
+    if(m->jogador != NULL) {
+        desenharJogador(m->jogador);
+    }
     
 }
 
@@ -183,6 +205,11 @@ void atualizarMapa(Mapa *m,GameWorld *gw, float delta ) {
         el = el->proximo;
     }
 
+    if(m->jogador != NULL) {
+        atualizarJogador(m->jogador, gw, delta);
+        entradaJogador(m->jogador);
+    }
+
 }
 
 int calcularLarguraMapa(Mapa *m) {
@@ -190,7 +217,7 @@ int calcularLarguraMapa(Mapa *m) {
     return (int) (m->colunas * m->tamanhoElemento);
 
 }
-
+    
 int calcularAlturaMapa(Mapa *m) {
 
     return (int) (m->linhas * m->tamanhoElemento);
