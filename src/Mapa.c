@@ -5,17 +5,25 @@
 #include "Mapa.h"
 #include "Obstaculo.h"
 #include "Inimigo.h"
+#include "Item.h"
 
 static void inserirObstaculo(Mapa *m, ElementoMapa *o);
 static void inserirInimigo(Mapa *m, ElementoMapa *i);
+static void inserirItem(Mapa *m, ElementoMapa *i);
 
 Mapa *carregarMapa( const char *caminhoArquivo ) {
 
     Mapa *novoMapa = (Mapa*) malloc( sizeof( Mapa ) );
+
     novoMapa->obstaculos = NULL;
     novoMapa->quantidadeObstaculos = 0;
+
     novoMapa->inimigos = NULL;
     novoMapa->quantidadeInimigos = 0;
+
+    novoMapa->itens = NULL;
+    novoMapa->quantidadeItens = 0;
+    
     novoMapa->tamanhoElemento = 48;
     novoMapa->linhas = 0;
     novoMapa->colunas = 0;
@@ -80,14 +88,35 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
                             el->tipo = ELEMENTO_MAPA_INIMIGO;
                             break;
                         default:
-                            free(el); // evita leak para caracteres não tratados
-                            el = NULL;
+                            free(el);
+                            break;
+                    }
+                    
+                    inserirInimigo(novoMapa, el);
+
+                } else if('a' <= *caractereAtual && *caractereAtual <= 'z') {
+
+                    Item *item = NULL;
+
+                    switch(*caractereAtual) {
+                        case 'a':
+                            item = criarItem(
+                                colunaAtual * novoMapa->tamanhoElemento,
+                                linhaAtual * novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                YELLOW
+                            );
+                            el->objeto = item;
+                            el->tipo = ELEMENTO_MAPA_ITEM;
+                            break;
+                        default:
+                            free(el);
                             break;
                     }
 
-                    inserirInimigo(novoMapa, el);
-
-                } 
+                    inserirItem(novoMapa, el);
+                }
 
             }
 
@@ -129,6 +158,12 @@ void desenharMapa(Mapa *m) {
         desenharInimigo((Inimigo*) el->objeto);
         el = el->proximo;
     }
+
+    el = m->itens;
+    while(el != NULL) {
+        desenharItem((Item*) el->objeto);
+        el = el->proximo;
+    }
     
 }
 
@@ -139,6 +174,12 @@ void atualizarMapa(Mapa *m,GameWorld *gw, float delta ) {
     el = m->inimigos;
     while(el != NULL) {
         atualizarInimigo((Inimigo*) el->objeto, gw, delta);
+        el = el->proximo;
+    }
+
+    el = m->itens;
+    while(el != NULL) {
+        atualizarItem((Item*) el->objeto, gw, delta);
         el = el->proximo;
     }
 
@@ -156,24 +197,35 @@ int calcularAlturaMapa(Mapa *m) {
 
 }
 
-static void inserirObstaculo(Mapa *m, ElementoMapa *o) {
+static void inserirObstaculo(Mapa *m, ElementoMapa *obs) {
 
     if(m->obstaculos == NULL) {
-        m->obstaculos = o;
+        m->obstaculos = obs;
     } else {
-        o->proximo = m->obstaculos;
-        m->obstaculos = o;
+        obs->proximo = m->obstaculos;
+        m->obstaculos = obs;
     }
     m->quantidadeObstaculos++;
 }
 
-static void inserirInimigo(Mapa *m, ElementoMapa *i) {
+static void inserirInimigo(Mapa *m, ElementoMapa *ini) {
 
     if(m->inimigos == NULL) {
-        m->inimigos = i;
+        m->inimigos = ini;
     } else {
-        i->proximo = m->inimigos;
-        m->inimigos = i;
+        ini->proximo = m->inimigos;
+        m->inimigos = ini;
     }
     m->quantidadeInimigos++;
+}
+
+static void inserirItem(Mapa *m, ElementoMapa *item) {
+
+    if(m->itens == NULL) {
+        m->itens = item;
+    } else {
+        item->proximo = m->itens;
+        m->itens = item;
+    }
+    m->quantidadeItens++;
 }

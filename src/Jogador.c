@@ -22,6 +22,7 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
     novoJogador->cor = BLUE;
 
     novoJogador->vidas = 5;
+    novoJogador->moedas = 0;
 
     novoJogador->velAndando = 225;
     novoJogador->velCorrendo = 325;
