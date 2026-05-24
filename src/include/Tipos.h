@@ -18,6 +18,11 @@ typedef enum TipoElementoMapa {
     ELEMENTO_MAPA_JOGADOR
 } TipoElementoMapa;
 
+typedef enum TipoObstaculo {
+    OBSTACULO_NORMAL,
+    OBSTACULO_MOVEL 
+}TipoObstaculo;
+
 typedef struct Jogador {
     Rectangle ret;
     Vector2 vel;
@@ -42,11 +47,25 @@ typedef struct Inimigo {
 } Inimigo;
 
 typedef struct Obstaculo {
+    void *objeto;
+    TipoObstaculo tipo;
+} Obstaculo;
+
+typedef struct ObstaculoNormal {
     Rectangle ret;
     Color cor;
     Rectangle fonte;
     Texture2D *textura;
-} Obstaculo;
+} ObstaculoNormal;
+
+typedef struct ObstaculoMovel {
+    Rectangle ret;
+    Vector2 destino;
+    Vector2 vel;
+    Color cor;
+    Rectangle fonte;
+    Texture2D *textura;
+} ObstaculoMovel;
 
 typedef struct Item {
     Rectangle ret;

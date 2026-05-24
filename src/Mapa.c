@@ -3,6 +3,8 @@
 #include "ResourceManager.h"
 #include "Tipos.h"
 #include "Mapa.h"
+#include "ObstaculoNormal.h"
+#include "ObstaculoMovel.h"
 #include "Obstaculo.h"
 #include "Inimigo.h"
 #include "Item.h"
@@ -55,23 +57,56 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
 
                     int deslocamento = *caractereAtual - 'A';
 
-                    el->objeto = criarObstaculo(
-                        (Rectangle) {
-                            .x = colunaAtual * novoMapa->tamanhoElemento,
-                            .y = linhaAtual * novoMapa->tamanhoElemento,
-                            .width = novoMapa->tamanhoElemento,
-                            .height = novoMapa->tamanhoElemento
-                        },
-                        (Rectangle) {
-                            .x = 1 + (novoMapa->tamanhoElemento + 1) * deslocamento,
-                            .y = 1,
-                            .width = novoMapa->tamanhoElemento,
-                            .height = novoMapa->tamanhoElemento
-                        },
-                        &rm.texturaTerreno,
-                        GRAY
-                    );
+                    Obstaculo *obs = NULL;
+
+                    if(*caractereAtual == 'S') {
+
+                        obs = criarObstaculo(OBSTACULO_MOVEL);
+                        
+                        obs->objeto = criarObstaculoMovel(
+                            (Rectangle) {
+                                .x = colunaAtual * novoMapa->tamanhoElemento,
+                                .y = linhaAtual * novoMapa->tamanhoElemento,
+                                .width = novoMapa->tamanhoElemento,
+                                .height = novoMapa->tamanhoElemento
+                            },
+                            (Rectangle) {
+                                1 + (novoMapa->tamanhoElemento + 1) * deslocamento,
+                                1,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento
+                            },
+                            (Vector2) {0},
+                            (Vector2) {0},
+                            YELLOW,
+                            &rm.texturaTerreno
+                        );
+                    } else {
+
+                        obs = criarObstaculo(OBSTACULO_NORMAL);
+                        
+                        obs->objeto = criarObstaculoNormal(
+                            (Rectangle) {
+                                .x = colunaAtual * novoMapa->tamanhoElemento,
+                                .y = linhaAtual * novoMapa->tamanhoElemento,
+                                .width = novoMapa->tamanhoElemento,
+                                .height = novoMapa->tamanhoElemento
+                            },
+                            (Rectangle) {
+                                1 + (novoMapa->tamanhoElemento + 1) * deslocamento,
+                                1,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento
+                            }, 
+                            YELLOW,
+                            &rm.texturaTerreno                          
+                        );
+                        
+                    }
+                    
+                    el->objeto = obs;
                     el->tipo = ELEMENTO_MAPA_OBSTACULO;
+
                     inserirObstaculo(novoMapa, el);
 
                 } else if('1' <= *caractereAtual && *caractereAtual <= '9') {
@@ -217,7 +252,7 @@ int calcularLarguraMapa(Mapa *m) {
     return (int) (m->colunas * m->tamanhoElemento);
 
 }
-    
+
 int calcularAlturaMapa(Mapa *m) {
 
     return (int) (m->linhas * m->tamanhoElemento);

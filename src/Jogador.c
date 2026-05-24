@@ -32,6 +32,8 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
     novoJogador->velPuloCorrendo = -525;
     novoJogador->velMaxQueda = 600;
 
+    novoJogador->noChao = false;
+
     return novoJogador;
 }
 
@@ -90,16 +92,35 @@ static void resolverColisaoJogadorMapaX( Jogador *j, Mapa *mapa ) {
 
     while ( el != NULL ) {
 
-         Obstaculo *o = (Obstaculo*) el->objeto;
+        Obstaculo *obs = (Obstaculo*) el->objeto;
 
-        if ( CheckCollisionRecs( j->ret, o->ret ) ) {
-            if ( j->ret.x + j->ret.width / 2 < o->ret.x + o->ret.width / 2 ) {
-                j->ret.x = o->ret.x - j->ret.width;
-            } else {
-                j->ret.x = o->ret.x + o->ret.width;
+        if(obs->tipo == OBSTACULO_NORMAL) {
+
+            ObstaculoNormal *o = (ObstaculoNormal*) obs->objeto;
+
+            if ( CheckCollisionRecs( j->ret, o->ret ) ) {
+                if ( j->ret.x + j->ret.width / 2 < o->ret.x + o->ret.width / 2 ) {
+                    j->ret.x = o->ret.x - j->ret.width;
+                } else {
+                    j->ret.x = o->ret.x + o->ret.width;
+                }
+                j->vel.x = 0;
             }
-            j->vel.x = 0;
+            
+        } else if(obs->tipo == OBSTACULO_MOVEL) {
+            
+            ObstaculoMovel *o = (ObstaculoMovel*) obs->objeto;
+            
+            if ( CheckCollisionRecs( j->ret, o->ret ) ) {
+                if ( j->ret.x + j->ret.width / 2 < o->ret.x + o->ret.width / 2 ) {
+                    j->ret.x = o->ret.x - j->ret.width;
+                } else {
+                    j->ret.x = o->ret.x + o->ret.width;
+                }
+                j->vel.x = 0;
+            }
         }
+
 
         el = el->proximo;
 
@@ -113,17 +134,36 @@ static void resolverColisaoJogadorMapaY( Jogador *j, Mapa *mapa ) {
 
     while ( el != NULL ) {
 
-        Obstaculo *o = (Obstaculo*) el->objeto;
+        Obstaculo *obs = (Obstaculo*) el->objeto;
 
-        if ( CheckCollisionRecs( j->ret, o->ret ) ) {
-            if ( j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {
-                j->ret.y = o->ret.y - j->ret.height;
-                j->noChao = true;   
-            } else {
-                j->ret.y = o->ret.y + o->ret.height;
+        if(obs->tipo == OBSTACULO_NORMAL) {
+
+            ObstaculoNormal *o = (ObstaculoNormal*) obs->objeto;
+
+            if ( CheckCollisionRecs( j->ret, o->ret ) ) {
+                if ( j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {
+                    j->ret.y = o->ret.y - j->ret.height;
+                    j->noChao = true;   
+                } else {
+                    j->ret.y = o->ret.y + o->ret.height;
+                }
+                j->vel.y = 0;
             }
-            j->vel.y = 0;
+        } else if(obs->tipo == OBSTACULO_MOVEL) {
+
+            ObstaculoMovel *o = (ObstaculoMovel*) obs->objeto;
+            
+            if ( CheckCollisionRecs( j->ret, o->ret ) ) {
+                if ( j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {
+                    j->ret.y = o->ret.y - j->ret.height;
+                    j->noChao = true;   
+                } else {
+                    j->ret.y = o->ret.y + o->ret.height;
+                }
+                j->vel.y = 0;
+            }
         }
+
 
         el = el->proximo;
 

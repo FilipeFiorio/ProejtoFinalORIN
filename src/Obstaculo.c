@@ -3,39 +3,34 @@
 #include "raylib/raylib.h"
 #include "Tipos.h"
 #include "Obstaculo.h"
-
+#include "ObstaculoNormal.h"
+#include "ObstaculoMovel.h"
 
 void desenharObstaculo(Obstaculo *obstaculo) {
-    
-    if(obstaculo->textura == NULL) {
-        DrawRectangleRec(obstaculo->ret, obstaculo->cor);
+
+    if(obstaculo == NULL) {
         return;
     }
-
-    DrawTexturePro(
-        *obstaculo->textura,
-        obstaculo->fonte,
-        obstaculo->ret,
-        (Vector2) {0},
-        0.0f,
-        WHITE
-    );
+    
+    if(obstaculo->tipo == OBSTACULO_NORMAL) {
+        desenharObstaculoNormal((ObstaculoNormal*) obstaculo->objeto);
+    } else if(obstaculo->tipo == OBSTACULO_MOVEL) {
+        desenharObstaculoMovel((ObstaculoMovel*) obstaculo->objeto);
+    }
 }
 
-Obstaculo *criarObstaculo(Rectangle ret, Rectangle fonte, Texture2D *textura, Color cor) {
+Obstaculo *criarObstaculo(TipoObstaculo tipo) {
 
     Obstaculo *novoObstaculo = (Obstaculo*) malloc(sizeof(Obstaculo));
 
-    novoObstaculo->ret = ret;
-    novoObstaculo->fonte = fonte;
-    novoObstaculo->textura = textura;   
-    novoObstaculo->cor = cor;
+    novoObstaculo->objeto = NULL;
+    novoObstaculo->tipo = tipo;
 
     return novoObstaculo;
 }
 
 void destruirObstaculo(Obstaculo *obstaculo) {
 
-    free(obstaculo);
+    // Fazer dps
     
 }

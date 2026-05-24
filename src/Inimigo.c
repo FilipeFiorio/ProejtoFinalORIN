@@ -72,19 +72,39 @@ static void resolverColisaoinimigoMapaX(Inimigo *i, Mapa *m) {
 
     while(el != NULL) {
 
-        Obstaculo *o = (Obstaculo*) el->objeto;
+        Obstaculo *obs = (Obstaculo*) el->objeto;
 
-        if(CheckCollisionRecs(i->ret, o->ret)) {
-            if(i->ret.x + i->ret.width / 2 < o->ret.x + o->ret.width / 2) {
-                i->ret.x = o->ret.x - i->ret.width;
-            } else {
-                i->ret.x = o->ret.x + o->ret.width;
-            }
+        if(obs->tipo == OBSTACULO_NORMAL) {
+
+            ObstaculoNormal *o = (ObstaculoNormal*) obs->objeto;
+
+            if(CheckCollisionRecs(i->ret, o->ret)) {
+                if(i->ret.x + i->ret.width / 2 < o->ret.x + o->ret.width / 2) {
+                    i->ret.x = o->ret.x - i->ret.width;
+                } else {
+                    i->ret.x = o->ret.x + o->ret.width;
+                }
+                    
+                i->vel.x = -i->vel.x;
                 
-            i->vel.x = -i->vel.x;
+            }
+
+        } else if(obs->tipo == OBSTACULO_MOVEL) {
+
+            ObstaculoMovel *o = (ObstaculoMovel*) obs->objeto;
+
+            if(CheckCollisionRecs(i->ret, o->ret)) {
+                if(i->ret.x + i->ret.width / 2 < o->ret.x + o->ret.width / 2) {
+                    i->ret.x = o->ret.x - i->ret.width;
+                } else {
+                    i->ret.x = o->ret.x + o->ret.width;
+                }
+                    
+                i->vel.x = -i->vel.x;
+                
+            }
             
         }
-        
 
         el = el->proximo;
 
@@ -100,17 +120,36 @@ static void resolverColisaoInimigoMapaY( Inimigo *i, Mapa *m ) {
 
     while ( el != NULL ) {
 
-        Obstaculo *o = (Obstaculo*) el->objeto;
+        Obstaculo *obs = (Obstaculo*) el->objeto;
 
-        if ( CheckCollisionRecs( i->ret, o->ret ) ) {
-            if ( i->ret.y + i->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {
-                i->ret.y = o->ret.y - i->ret.height;
-                i->noChao = true;
-            } else { //não precisa
-                i->ret.y = o->ret.y + o->ret.height;
+        if(obs->tipo == OBSTACULO_NORMAL) {
+
+            ObstaculoNormal *o = (ObstaculoNormal*) obs->objeto;
+
+            if ( CheckCollisionRecs( i->ret, o->ret ) ) {
+                if ( i->ret.y + i->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {
+                    i->ret.y = o->ret.y - i->ret.height;
+                    i->noChao = true;
+                } else { //não precisa
+                    i->ret.y = o->ret.y + o->ret.height;
+                }
+                i->vel.y = 0;
             }
-            i->vel.y = 0;
-        } 
+
+        } else if(obs->tipo == OBSTACULO_MOVEL)  {
+
+            ObstaculoMovel *o = (ObstaculoMovel*) obs->objeto;
+            
+            if ( CheckCollisionRecs( i->ret, o->ret ) ) {
+                if ( i->ret.y + i->ret.height / 2 < o->ret.y + o->ret.height / 2 ) {
+                    i->ret.y = o->ret.y - i->ret.height;
+                    i->noChao = true;
+                } else { //não precisa
+                    i->ret.y = o->ret.y + o->ret.height;
+                }
+                i->vel.y = 0;
+            }
+         }
 
         el = el->proximo;
 
@@ -130,10 +169,26 @@ static bool verificarSeTemChao(Inimigo *i, Mapa *m) {
     ElementoMapa *el = m->obstaculos;
 
     while(el != NULL) {
-        Obstaculo *o = (Obstaculo*) el->objeto;
-        if(CheckCollisionRecs(ret, o->ret)) {
-            return true;
+        
+        Obstaculo *obs = (Obstaculo*) el->objeto;
+
+        if(obs->tipo == OBSTACULO_NORMAL) {
+
+            ObstaculoNormal *o = (ObstaculoNormal*) obs->objeto;
+            
+            if(CheckCollisionRecs(ret, o->ret)) {
+                return true;
+            }
+
+        } else if(obs->tipo == OBSTACULO_MOVEL) {
+
+            ObstaculoMovel *o = (ObstaculoMovel*) obs->objeto;
+            
+            if(CheckCollisionRecs(ret, o->ret)) {
+                return true;
+            }
         }
+        
         el = el->proximo;
     }
 
