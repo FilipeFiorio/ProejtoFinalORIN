@@ -151,6 +151,7 @@ static void resolverColisaoJogadorMapaY( Jogador *j, Mapa *mapa ) {
             }
         } else if(obs->tipo == OBSTACULO_MOVEL) {
 
+            //Ajustar a colisao para o obstaculo Movel, jogador esta teleportando
             ObstaculoMovel *o = (ObstaculoMovel*) obs->objeto;
             
             if ( CheckCollisionRecs( j->ret, o->ret ) ) {

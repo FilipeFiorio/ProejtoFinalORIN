@@ -4,12 +4,12 @@ G                                 MMMMMMM                                       
 G                     a                                                                                          aaaa                                                                                             G
 G                    a a                                                                              aaa        MMMMMM             1                                                                             G
 G                                                                                       a         MMMMMMM                         MMMMMM                                                     1                    G
-G                   P    P                                                    a         G                                                                                                NAAAAAAAO                G
+G         TT        P    P                                                    a         G                                                                                                NAAAAAAAO                G
 G                  NR    QO         G          G                     a        G         G                                                                                    aaa         DFFFFFFFE        Z       G
 G                 NBE    DCO        G          G             a       G        G         G                                                    MMMMMM           1              MMM         DFFFFFFFCAAAAAAAAAAAAAAAAG
-G@               NBFE    DFCO       G     1    G             G   1   G    1   G    1    G                                                  A              NAAAAAAAAAAO                   DFFFFFFFFFFFFFFFFFFFFFFFFG
+G       @        NBFE    DFCO       G     1    G             G   1   G    1   G    1    G                                                  A              NAAAAAAAAAAO                   DFFFFFFFFFFFFFFFFFFFFFFFFG
 GAAAAAAAAAAAAAAAABFFE    DFFCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO                                               A                DFFFFFFFFFFE                   DFFFFFFFFFFFFFFFFFFFFFFFFF
-                                                                                                                                       A
+                      SS                                                                                                               A
                                                                                                                                    AA   
                                                                                                                                         AAA
                                                                                                                                      A
@@ -20,4 +20,3 @@ GAAAAAAAAAAAAAAAABFFE    DFFCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
                                                                                                                            A
                                                                                               AAAAAAAAAA    AA   AA   AAA               
                                                                               AAAAAAAAAAAA
-                                                                            

@@ -60,11 +60,13 @@ typedef struct ObstaculoNormal {
 
 typedef struct ObstaculoMovel {
     Rectangle ret;
-    Vector2 destino;
+    Vector2 posInicial;
+    Vector2 deslocamento;
     Vector2 vel;
     Color cor;
     Rectangle fonte;
     Texture2D *textura;
+    bool retornando;
 } ObstaculoMovel;
 
 typedef struct Item {

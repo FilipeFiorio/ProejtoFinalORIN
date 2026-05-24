@@ -76,12 +76,36 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
                                 novoMapa->tamanhoElemento,
                                 novoMapa->tamanhoElemento
                             },
-                            (Vector2) {0},
-                            (Vector2) {0},
+                            (Vector2) {0, (float) (novoMapa->tamanhoElemento * 5)},
+                            (Vector2) {0, 50.0},
                             YELLOW,
                             &rm.texturaTerreno
                         );
-                    } else {
+                    } else if(*caractereAtual == 'T') {
+
+                        obs = criarObstaculo(OBSTACULO_MOVEL);
+                        
+                        obs->objeto = criarObstaculoMovel(
+                            (Rectangle) {
+                                .x = colunaAtual * novoMapa->tamanhoElemento,
+                                .y = linhaAtual * novoMapa->tamanhoElemento,
+                                .width = novoMapa->tamanhoElemento,
+                                .height = novoMapa->tamanhoElemento
+                            },
+                            (Rectangle) {
+                                1 + (novoMapa->tamanhoElemento + 1) * deslocamento,
+                                1,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento
+                            },
+                            (Vector2) {(float) (novoMapa->tamanhoElemento * 7), 0},
+                            (Vector2) {50.0, 0},
+                            YELLOW,
+                            &rm.texturaTerreno
+                        );
+                    }
+                    
+                    else {
 
                         obs = criarObstaculo(OBSTACULO_NORMAL);
                         
@@ -237,6 +261,15 @@ void atualizarMapa(Mapa *m,GameWorld *gw, float delta ) {
     el = m->itens;
     while(el != NULL) {
         atualizarItem((Item*) el->objeto, gw, delta);
+        el = el->proximo;
+    }
+
+    el = m->obstaculos;
+    while(el != NULL) {
+        Obstaculo *o = (Obstaculo*) el->objeto;
+        if(o->tipo == OBSTACULO_MOVEL) {
+            atualizarObstaculoMovel((ObstaculoMovel*) o->objeto, gw, delta);
+        }
         el = el->proximo;
     }
 
