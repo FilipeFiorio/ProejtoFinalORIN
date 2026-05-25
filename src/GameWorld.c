@@ -58,11 +58,15 @@ void destroyGameWorld( GameWorld *gw ) {
  * @brief Reads user input and updates the state of the game.
  */
 void updateGameWorld( GameWorld *gw, float delta ) {
+    
+    gw->timerJogo -= (int) (1000 * delta);
+
+    if(gw->timerJogo <= 0) {
+        gw->mapa->jogador->vidas--;
+    }
 
     atualizarMapa(gw->mapa, gw, delta);
     verificarMorteJogador(gw);
-    //verificarColisaoJogadorInimigo(gw);
-    //verificarColisaoJogadorItem(gw);
 
     atualizarCamera(gw);
 
@@ -89,16 +93,20 @@ void drawGameWorld( GameWorld *gw ) {
     EndMode2D();
 
     char textoVidas[10];
-    sprintf(textoVidas, "vidas: %d", gw->mapa->jogador->vidas);
-    DrawText(textoVidas,10, 10, 20, WHITE);
+    sprintf(textoVidas, "Vidas: %d", gw->mapa->jogador->vidas);
+    DrawText(textoVidas,10, 10, 24, WHITE);
 
     char textoMoedas[10];
-    sprintf(textoMoedas, "moedas: %d", gw->mapa->jogador->moedas);
-    DrawText(textoMoedas,100, 10, 20, WHITE);
+    sprintf(textoMoedas, "Moedas: %d", gw->mapa->jogador->moedas);
+    DrawText(textoMoedas,150, 10, 24, WHITE);
+
+    char textoTimer[10];
+    sprintf(textoTimer, "Tempo: %d", gw->timerJogo / 1000);
+    DrawText(textoTimer,300, 10, 24, WHITE);
     
     char posJogador[30];
     sprintf(posJogador, "posicao: x: %d, y: %d", (int) gw->mapa->jogador->ret.x, (int) gw->mapa->jogador->ret.y);
-    DrawText(posJogador,10, 30, 20, BLACK);
+    DrawText(posJogador,10, 50, 20, BLACK);
 
     EndDrawing();
 
@@ -183,6 +191,7 @@ static void inicializarGW(GameWorld *gw) {
 
     gw->mapa = carregarMapa("resources/mapas/fase01.txt");
     gw->gravidade = 600;
+    gw->timerJogo = 300000;
 
     gw->camera = (Camera2D) {
         .offset = {0},

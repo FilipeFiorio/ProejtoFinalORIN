@@ -191,37 +191,78 @@ static void verificarColisaoJogadorItem(GameWorld *gw) {
 
 }
 
+// Atualmente verifica apenas se há colisão pela esquerda, direita e por cima
+// por cima apenas ve se a vel.x é maior que zero
+// se for > 0 o jogador está em cima do inimigo
 static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
     Jogador *j = gw->mapa->jogador;
     ElementoMapa *el = gw->mapa->inimigos;
 
-    // Atualmente verifica apenas se há colisão pela esquerda, direita e por cima
-    // por cima apenas ve se a vel.x é maior que zero
-    // se for > 0 o jogador está em cima do inimigo
-
     while (el != NULL) {
 
-        Inimigo *i = (Inimigo*) el->objeto;
+        Inimigo *inimigo = (Inimigo*) el->objeto;
 
-        if(CheckCollisionRecs(j->ret, i->ret) && i->estaVivo) {
-            if(j->vel.y > 0) {
-                i->estaVivo = false;  
-                j->vel.y = j->velPulo * 0.75;   
-            } else {
-                if(j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                    j->ret.x = i->ret.x + i->ret.width;
-                    j->vidas--;
-                } else if(j->ret.x + j->ret.width / 2 < i->ret.x + i->ret.width / 2 ) {
-                    j->ret.x = i->ret.x - i->ret.width;
+        if (inimigo->tipo == INIMIGO_NORMAL) {
+
+            InimigoNormal *i = (InimigoNormal*) inimigo->objeto;
+
+            if (CheckCollisionRecs(j->ret, i->ret) && i->estaVivo) {
+                if (j->vel.y > 0) {
+                    i->estaVivo = false;
+                    j->vel.y = j->velPulo * 0.75f;
+                } else {
+                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
+                        j->ret.x = i->ret.x + i->ret.width;
+                    } else {
+                        j->ret.x = i->ret.x - j->ret.width;
+                    }
                     j->vidas--;
                 }
+                return;
             }
-            return;
+
+        } else if (inimigo->tipo == INIMIGO_DASH) {
+
+            InimigoDash *i = (InimigoDash*) inimigo->objeto;
+
+            if (CheckCollisionRecs(j->ret, i->ret) && i->estaVivo) {
+                if (j->vel.y > 0) {
+                    i->estaVivo = false;
+                    j->vel.y = j->velPulo * 0.75f;
+                } else {
+                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
+                        j->ret.x = i->ret.x + i->ret.width;
+                    } else {
+                        j->ret.x = i->ret.x - j->ret.width;
+                    }
+                    j->vidas--;
+                }
+                return;
+            }
+
+        } else if (inimigo->tipo == INIMIGO_VOADOR) {
+
+            InimigoVoador *i = (InimigoVoador*) inimigo->objeto;
+
+            if (CheckCollisionRecs(j->ret, i->ret) && i->estaVivo) {
+                if (j->vel.y > 0) {
+                    i->estaVivo = false;
+                    j->vel.y = j->velPulo * 0.75f;
+                } else {
+                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
+                        j->ret.x = i->ret.x + i->ret.width;
+                    } else {
+                        j->ret.x = i->ret.x - j->ret.width;
+                    }
+                    j->vidas--;
+                }
+                return;
+            }
+
         }
 
         el = el->proximo;
     }
 
 }
-

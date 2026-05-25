@@ -23,6 +23,12 @@ typedef enum TipoObstaculo {
     OBSTACULO_MOVEL 
 }TipoObstaculo;
 
+typedef enum TipoInimigo {
+    INIMIGO_NORMAL,
+    INIMIGO_VOADOR,
+    INIMIGO_DASH
+}TipoInimigo;
+
 typedef struct Jogador {
     Rectangle ret;
     Vector2 vel;
@@ -38,13 +44,39 @@ typedef struct Jogador {
 } Jogador;
 
 typedef struct Inimigo {
+    void *objeto;
+    TipoInimigo tipo;
+} Inimigo;
+
+typedef struct InimigoNormal {
     Rectangle ret;
     Color cor;
     Vector2 vel;
     float velMaxQueda;
     bool estaVivo;
     bool noChao;
-} Inimigo;
+} InimigoNormal;
+
+typedef struct InimigoDash {
+    Rectangle ret;
+    Color cor;
+    Vector2 vel;
+    float tamanhoDash;
+    float velMaxQueda;
+    float velXInicial;
+    bool estaVivo;
+    bool noChao;
+} InimigoDash;
+
+typedef struct InimigoVoador {
+    Rectangle ret;
+    Color cor;
+    Vector2 vel;
+    Vector2 posInicial;
+    Vector2 deslocamento;
+    bool estaVivo;
+    bool retornando;
+}InimigoVoador;
 
 typedef struct Obstaculo {
     void *objeto;
@@ -103,5 +135,6 @@ typedef struct GameWorld {
     Mapa *mapa;
     Camera2D camera;
     float gravidade;
+    int timerJogo;
 }GameWorld;
 

@@ -63,13 +63,17 @@ void atualizarObstaculoMovel(ObstaculoMovel *obstaculoMovel, GameWorld *gw, floa
     if(obstaculoMovel->deslocamento.x != 0) {
         if(!obstaculoMovel->retornando) {
             obstaculoMovel->ret.x += obstaculoMovel->vel.x * delta;
+
             if(obstaculoMovel->ret.x >= alvo.x) { 
-                obstaculoMovel->ret.x = alvo.x; obstaculoMovel->retornando = true; 
+                obstaculoMovel->ret.x = alvo.x; 
+                obstaculoMovel->retornando = true; 
             }
         } else {
             obstaculoMovel->ret.x -= obstaculoMovel->vel.x * delta;
+
             if(obstaculoMovel->ret.x <= alvo.x) { 
-                obstaculoMovel->ret.x = alvo.x; obstaculoMovel->retornando = false; 
+                obstaculoMovel->ret.x = alvo.x; 
+                obstaculoMovel->retornando = false; 
             }
         }
     }
@@ -77,13 +81,17 @@ void atualizarObstaculoMovel(ObstaculoMovel *obstaculoMovel, GameWorld *gw, floa
     if(obstaculoMovel->deslocamento.y != 0) {
         if(!obstaculoMovel->retornando) {
             obstaculoMovel->ret.y += obstaculoMovel->vel.y * delta;
+
             if(obstaculoMovel->ret.y >= alvo.y) { 
-                obstaculoMovel->ret.y = alvo.y; obstaculoMovel->retornando = true; 
+                obstaculoMovel->ret.y = alvo.y; 
+                obstaculoMovel->retornando = true; 
             }
         } else {
             obstaculoMovel->ret.y -= obstaculoMovel->vel.y * delta;
+            
             if(obstaculoMovel->ret.y <= alvo.y) { 
-                obstaculoMovel->ret.y = alvo.y; obstaculoMovel->retornando = false; 
+                obstaculoMovel->ret.y = alvo.y; 
+                obstaculoMovel->retornando = false; 
             }
         }
     }

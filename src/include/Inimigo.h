@@ -2,7 +2,7 @@
 
 #include "Tipos.h"
 
-Inimigo *criarInimigo(float x, float y, float largura, float altura, Color cor);
+Inimigo *criarInimigo(TipoInimigo tipo);
 void atualizarInimigo(Inimigo *inimigo, GameWorld *gw, float delta);
 void destruirInimigo(Inimigo *inimigo);
 void desenharInimigo(Inimigo *inimigo);

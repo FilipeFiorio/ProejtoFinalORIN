@@ -1,5 +1,7 @@
 #include <stdlib.h>
+
 #include "raylib/raylib.h"
+
 #include "ResourceManager.h"
 #include "Tipos.h"
 #include "Mapa.h"
@@ -7,6 +9,9 @@
 #include "ObstaculoMovel.h"
 #include "Obstaculo.h"
 #include "Inimigo.h"
+#include "InimigoNormal.h"
+#include "InimigoDash.h"
+#include "InimigoVoador.h"
 #include "Item.h"
 #include "Jogador.h"
 
@@ -139,7 +144,10 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
 
                     switch(*caractereAtual) {
                         case '1':
-                            inimigo = criarInimigo(
+
+                            inimigo = criarInimigo(INIMIGO_NORMAL);
+
+                            inimigo->objeto = criarInimigoNormal(
                                 colunaAtual * novoMapa->tamanhoElemento,
                                 linhaAtual * novoMapa->tamanhoElemento,
                                 novoMapa->tamanhoElemento,
@@ -148,13 +156,67 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
                             );
                             el->objeto = inimigo;
                             el->tipo = ELEMENTO_MAPA_INIMIGO;
+                            inserirInimigo(novoMapa, el);
                             break;
+
+                        case '2':
+
+                            inimigo = criarInimigo(INIMIGO_DASH);
+
+                            inimigo->objeto = criarInimigoDash(
+                                colunaAtual * novoMapa->tamanhoElemento,
+                                linhaAtual * novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento * 2,
+                                PURPLE
+                            );
+                            el->objeto = inimigo;
+                            el->tipo = ELEMENTO_MAPA_INIMIGO;
+                            inserirInimigo(novoMapa, el);
+                            break;
+
+                        case '3': //Inimigo voador na horizontal
+
+                            inimigo = criarInimigo(INIMIGO_VOADOR);
+
+                            inimigo->objeto = criarInimigoVoador(
+                                colunaAtual * novoMapa->tamanhoElemento,
+                                linhaAtual * novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                (Vector2) {novoMapa->tamanhoElemento * 3, 0},
+                                (Vector2) {75, 0},
+                                RED
+                            );
+                            el->objeto = inimigo;
+                            el->tipo = ELEMENTO_MAPA_INIMIGO;
+                            inserirInimigo(novoMapa, el);
+                            break;
+
+                        case '4': //Inimigo voador na vertical
+
+                            inimigo = criarInimigo(INIMIGO_VOADOR);
+
+                            inimigo->objeto = criarInimigoVoador(
+                                colunaAtual * novoMapa->tamanhoElemento,
+                                linhaAtual * novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                (Vector2) {0, novoMapa->tamanhoElemento * 3},
+                                (Vector2) {0, 75},
+                                RED
+                            );
+                            el->objeto = inimigo;
+                            el->tipo = ELEMENTO_MAPA_INIMIGO;
+                            inserirInimigo(novoMapa, el);
+                            break;
+                            
                         default:
                             free(el);
                             break;
                     }
                     
-                    inserirInimigo(novoMapa, el);
 
                 } else if('a' <= *caractereAtual && *caractereAtual <= 'z') {
 
@@ -162,6 +224,7 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
 
                     switch(*caractereAtual) {
                         case 'a':
+
                             item = criarItem(
                                 colunaAtual * novoMapa->tamanhoElemento,
                                 linhaAtual * novoMapa->tamanhoElemento,
@@ -172,12 +235,12 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
                             el->objeto = item;
                             el->tipo = ELEMENTO_MAPA_ITEM;
                             break;
+                            inserirItem(novoMapa, el);
                         default:
                             free(el);
                             break;
                     }
 
-                    inserirItem(novoMapa, el);
 
                 } else if(*caractereAtual == '@') {
 

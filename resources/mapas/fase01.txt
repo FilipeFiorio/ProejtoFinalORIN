@@ -2,21 +2,21 @@ G
 G                                   aaa                                                                                   1                                                                                       G
 G                                 MMMMMMM                                                                               MMMMMM                                                                                    G
 G                     a                                                                                          aaaa                                                                                             G
-G                    a a                                                                              aaa        MMMMMM             1                                                                             G
-G                                                                                       a         MMMMMMM                         MMMMMM                                                     1                    G
-G         TT        P    P                                                    a         G                                                                                                NAAAAAAAO                G
+G              4      a a                                                                              aaa        MMMMMM             1                                                                            G
+G       3                                                                                a         MMMMMMM                         MMMMMM                                                     1                   G
+G                   P    P                                                    a         G                                                                                                NAAAAAAAO                G
 G                  NR    QO         G          G                     a        G         G                                                                                    aaa         DFFFFFFFE        Z       G
 G                 NBE    DCO        G          G             a       G        G         G                                                    MMMMMM           1              MMM         DFFFFFFFCAAAAAAAAAAAAAAAAG
-G       @        NBFE    DFCO       G     1    G             G   1   G    1   G    1    G                                                  A              NAAAAAAAAAAO                   DFFFFFFFFFFFFFFFFFFFFFFFFG
+G@               NBFE    DFCO       G     2    G             G   1   G    1   G    1    G                                                  A              NAAAAAAAAAAO                   DFFFFFFFFFFFFFFFFFFFFFFFFG
 GAAAAAAAAAAAAAAAABFFE    DFFCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO                                               A                DFFFFFFFFFFE                   DFFFFFFFFFFFFFFFFFFFFFFFFF
-                      SS                                                                                                               A
+                                                                                                                                       A
                                                                                                                                    AA   
                                                                                                                                         AAA
                                                                                                                                      A
                                                        AAAAA                                                                       A
                           AAAA             AAAAAA                                                                                A
              AAAAAAAAAAA         AAAAAAA                        SSSSSSSSSSSSSS                                                 A
-                                                                                                                             A
+                                                                                                                             Ama
                                                                                                                            A
                                                                                               AAAAAAAAAA    AA   AA   AAA               
                                                                               AAAAAAAAAAAA
