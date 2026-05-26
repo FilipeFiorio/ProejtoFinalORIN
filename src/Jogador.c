@@ -87,8 +87,8 @@ void desenharJogador(Jogador *j) {
 
 /**
  * Agora, alem de checar a colisao do retangulo do jogador com o retangulo do obstaculo, verifica 
- * a largura e altura de do retangulo de colisao, se a altura for maior atualiza em y, caso contrario 
- * atualizza em x
+ * a largura e altura de do retangulo de colisao, se a altura for maior atualiza em X, caso contrario 
+ * atualizza em Y
  */
 static void resolverColisaoJogadorMapaX(Jogador *j, Mapa *mapa) {
 
@@ -176,7 +176,7 @@ static void resolverColisaoJogadorMapaY(Jogador *j, Mapa *mapa, float delta) {
                     if (j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2) {
                         j->ret.y = o->ret.y - j->ret.height;
                         j->noChao = true;
-                        
+
                         if (o->retornando) {
                             j->ret.x -= o->vel.x * delta;
                         } else {
