@@ -16,7 +16,7 @@ ResourceManager rm = { 0 };
 void loadResourcesResourceManager( void ) {
 
     rm.texturaTerreno = LoadTexture( "resources/images/tiles/terreno.png" );
-    rm.texturaFundo = LoadTexture("resources/images/fundos/bg-desert.png");
+    rm.texturaFundo = LoadTexture("resources/images/fundos/bg.png");
 
 }
 
