@@ -56,19 +56,39 @@ void destroyGameWorld( GameWorld *gw ) {
  * @brief Reads user input and updates the state of the game.
  */
 void updateGameWorld( GameWorld *gw, float delta ) {
-    
-    gw->timerJogo -= (int) (1000 * delta);
 
-    if(gw->timerJogo <= 0) {
-        gw->mapa->jogador->vidas--;
+    switch (gw->estado) {
+
+        case ESTADO_JOGO_GAMEPLAY:
+
+            gw->timerJogo -= (int) (1000 * delta);
+        
+            if(gw->timerJogo <= 0) {
+                gw->mapa->jogador->vidas--;
+            }
+        
+            atualizarMapa(gw->mapa, gw, delta);
+            verificarMorteJogador(gw);
+        
+            atualizarCamera(gw);
+        
+            verificarGameOver(gw);
+
+            break;
+        
+        case ESTADO_JOGO_GAME_OVER:
+
+            if(IsKeyPressed(KEY_ENTER)) {
+                inicializarGW(gw);
+                gw->estado = ESTADO_JOGO_GAMEPLAY;
+            }
+            
+            break;;
+
+        default:
+            break;
     }
-
-    atualizarMapa(gw->mapa, gw, delta);
-    verificarMorteJogador(gw);
-
-    atualizarCamera(gw);
-
-    verificarGameOver(gw);
+    
 
 }
 
@@ -79,32 +99,56 @@ void drawGameWorld( GameWorld *gw ) {
 
     BeginDrawing();
 
-    ClearBackground( (Color) {175, 231, 255, 255} );
+    switch (gw->estado) {
 
-    BeginMode2D(gw->camera);
+        case ESTADO_JOGO_GAMEPLAY:
 
-    desenharFundo(gw);
+            ClearBackground( (Color) {175, 231, 255, 255} );
+        
+            BeginMode2D(gw->camera);
+        
+            desenharFundo(gw);
+            desenharMapa(gw->mapa);
+        
+            EndMode2D();
+        
+            char textoVidas[20];
+            sprintf(textoVidas, "Vidas: %d", gw->mapa->jogador->vidas);
+            DrawText(textoVidas,10, 10, 24, WHITE);
+        
+            char textoMoedas[20];
+            sprintf(textoMoedas, "Moedas: %d", gw->mapa->jogador->moedas);
+            DrawText(textoMoedas,150, 10, 24, WHITE);
+        
+            char textoTimer[20];
+            sprintf(textoTimer, "Tempo: %d", gw->timerJogo / 1000);
+            DrawText(textoTimer,300, 10, 24, WHITE);
+            
+            char posJogador[30];
+            sprintf(posJogador, "posicao: x: %d, y: %d", (int) gw->mapa->jogador->ret.x, (int) gw->mapa->jogador->ret.y);
+            DrawText(posJogador,10, 50, 20, BLACK);
 
-    desenharMapa(gw->mapa);
+            break;
+        
+        case ESTADO_JOGO_GAME_OVER:
+
+            ClearBackground(BLACK);
+            DrawText("GAME OVER", 500, 200, 50, WHITE);
+            DrawText("Aperte ENTER para continuar", 420, 400, 32, WHITE);
+
+            break;
+
+        default:
+            break;
 
 
-    EndMode2D();
 
-    char textoVidas[20];
-    sprintf(textoVidas, "Vidas: %d", gw->mapa->jogador->vidas);
-    DrawText(textoVidas,10, 10, 24, WHITE);
+    }
 
-    char textoMoedas[20];
-    sprintf(textoMoedas, "Moedas: %d", gw->mapa->jogador->moedas);
-    DrawText(textoMoedas,150, 10, 24, WHITE);
-
-    char textoTimer[20];
-    sprintf(textoTimer, "Tempo: %d", gw->timerJogo / 1000);
-    DrawText(textoTimer,300, 10, 24, WHITE);
     
-    char posJogador[30];
-    sprintf(posJogador, "posicao: x: %d, y: %d", (int) gw->mapa->jogador->ret.x, (int) gw->mapa->jogador->ret.y);
-    DrawText(posJogador,10, 50, 20, BLACK);
+    
+ 
+
 
     EndDrawing();
 
@@ -173,7 +217,7 @@ static void verificarGameOver(GameWorld *gw) {
 
     if(gw->mapa->jogador->vidas < 0) {
         destruirMapa(gw->mapa);
-        inicializarGW(gw);
+        gw->estado = ESTADO_JOGO_GAME_OVER;
     }
 
 }
@@ -199,6 +243,7 @@ static void inicializarGW(GameWorld *gw) {
     gw->mapa = carregarMapa("resources/mapas/fase01.txt");
     gw->gravidade = 600;
     gw->timerJogo = 300000;
+    gw->estado = ESTADO_JOGO_GAMEPLAY;
 
     gw->camera = (Camera2D) {
         .offset = {0},
