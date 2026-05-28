@@ -205,7 +205,7 @@ static void resolverColisaoJogadorMapaY(Jogador *j, Mapa *mapa, float delta) {
                     j->vel.y = 0;
                 }
             }
-        }
+        } 
         
         el = el->proximo;
     }

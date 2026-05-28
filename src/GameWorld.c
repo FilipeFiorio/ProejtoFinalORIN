@@ -104,6 +104,17 @@ void updateGameWorld( GameWorld *gw, float delta ) {
             if(IsKeyPressed(KEY_P)) {
                 gw->estado = ESTADO_JOGO_GAMEPLAY;
             }
+
+            break;
+
+        case ESTADO_JOGO_FIM:
+
+            if(IsKeyPressed(KEY_ENTER)){
+                gw->estado = ESTADO_JOGO_INICIO;
+            }
+
+            break;
+
         default:
             break;
     }
@@ -169,6 +180,15 @@ void drawGameWorld( GameWorld *gw ) {
             desenharMapa(gw->mapa);
             
             EndMode2D();
+
+            break;
+
+        case ESTADO_JOGO_FIM:
+
+            ClearBackground(BLACK);
+
+            drawTextAlinhado("Você Venceu!!!", 200, 50, WHITE, CENTRO);
+            drawTextAlinhado("Aperte ENTER para voltar para o início", 400, 25, WHITE, CENTRO);
 
             break;
 

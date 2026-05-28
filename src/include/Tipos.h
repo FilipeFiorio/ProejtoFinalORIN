@@ -8,7 +8,8 @@ typedef enum EstadoJogo {
     ESTADO_JOGO_WORLD_MAP,
     ESTADO_JOGO_GAMEPLAY,
     ESTADO_JOGO_PAUSE,
-    ESTADO_JOGO_GAME_OVER
+    ESTADO_JOGO_GAME_OVER,
+    ESTADO_JOGO_FIM
 } EstadoJogo;
 
 typedef enum TipoElementoMapa {
@@ -20,7 +21,8 @@ typedef enum TipoElementoMapa {
 
 typedef enum TipoObstaculo {
     OBSTACULO_NORMAL,
-    OBSTACULO_MOVEL 
+    OBSTACULO_MOVEL,
+    OBSTACULO_CHEGADA 
 }TipoObstaculo;
 
 typedef enum TipoInimigo {
@@ -107,6 +109,13 @@ typedef struct ObstaculoMovel {
     Texture2D *textura;
     bool retornando;
 } ObstaculoMovel;
+
+typedef struct ObstaculoChegada {
+    Rectangle ret;
+    Color cor;
+    Rectangle fonte;
+    Texture2D *textura;
+} ObstaculoChegada;
 
 typedef struct Item {
     void *objeto;

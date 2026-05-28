@@ -5,6 +5,7 @@
 #include "ResourceManager.h"
 #include "Tipos.h"
 #include "Mapa.h"
+#include "Obstaculo.h"
 #include "ObstaculoNormal.h"
 #include "ObstaculoMovel.h"
 #include "Obstaculo.h"
@@ -111,9 +112,8 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
                             YELLOW,
                             &rm.texturaTerreno
                         );
-                    }
-                    
-                    else {
+                        
+                    } else {
 
                         obs = criarObstaculo(OBSTACULO_NORMAL);
                         
