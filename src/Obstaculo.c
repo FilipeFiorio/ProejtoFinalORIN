@@ -5,6 +5,7 @@
 #include "Obstaculo.h"
 #include "ObstaculoNormal.h"
 #include "ObstaculoMovel.h"
+#include "ObstaculoChegada.h"
 
 void desenharObstaculo(Obstaculo *obstaculo) {
 
@@ -16,6 +17,8 @@ void desenharObstaculo(Obstaculo *obstaculo) {
         desenharObstaculoNormal((ObstaculoNormal*) obstaculo->objeto);
     } else if(obstaculo->tipo == OBSTACULO_MOVEL) {
         desenharObstaculoMovel((ObstaculoMovel*) obstaculo->objeto);
+    } else if(obstaculo->tipo == OBSTACULO_CHEGADA) {
+        desenharObstaculoChegada((ObstaculoChegada*) obstaculo->objeto);
     }
 }
 
@@ -39,6 +42,8 @@ void destruirObstaculo(Obstaculo *obstaculo) {
         destruirObstaculoNormal((ObstaculoNormal*) obstaculo->objeto);
     } else if(obstaculo->tipo == OBSTACULO_MOVEL) {
         destruirObstaculoMovel((ObstaculoMovel*) obstaculo->objeto);
+    } else if(obstaculo->tipo == OBSTACULO_CHEGADA) {
+        destruirObstaculoChegada((ObstaculoChegada*) obstaculo->objeto);
     }
     
 }

@@ -74,9 +74,7 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         
             atualizarMapa(gw->mapa, gw, delta);
             verificarMorteJogador(gw);
-        
             atualizarCamera(gw);
-        
             verificarGameOver(gw);
 
             break;
@@ -314,3 +312,4 @@ static void desenharHud(GameWorld *gw) {
     drawTextAlinhado(textoHud, 10, 25, WHITE, ESQUERDA);
 
 }
+
