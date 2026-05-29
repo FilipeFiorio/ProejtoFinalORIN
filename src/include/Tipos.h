@@ -64,6 +64,8 @@ typedef struct InimigoNormal {
     float velMaxQueda;
     bool estaVivo;
     bool noChao;
+    int frameAtual;
+    float tempoFrame;
 } InimigoNormal;
 
 typedef struct InimigoDash {
@@ -75,6 +77,8 @@ typedef struct InimigoDash {
     float velXInicial;
     bool estaVivo;
     bool noChao;
+    int frameAtual;
+    float tempoFrame;
 } InimigoDash;
 
 typedef struct InimigoVoador {
@@ -85,6 +89,8 @@ typedef struct InimigoVoador {
     Vector2 deslocamento;
     bool estaVivo;
     bool retornando;
+    int frameAtual;
+    float tempoFrame;
 }InimigoVoador;
 
 typedef struct Obstaculo {

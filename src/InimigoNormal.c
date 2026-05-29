@@ -4,6 +4,7 @@
 
 #include "Tipos.h"
 #include "InimigoNormal.h"
+#include "ResourceManager.h"
 
 
 static void resolverColisaoInimigoMapaX(InimigoNormal *i, Mapa *m);
@@ -23,6 +24,8 @@ InimigoNormal *criarInimigoNormal(float x, float y, float largura, float altura,
     novoInimigoNormal->estaVivo = true;
     novoInimigoNormal->noChao = false;
     novoInimigoNormal->cor = cor;
+    novoInimigoNormal->frameAtual = 0;
+    novoInimigoNormal->tempoFrame = 0.0f;
 
     return novoInimigoNormal;
 
@@ -46,6 +49,12 @@ void atualizarInimigoNormal(InimigoNormal *inimigo, GameWorld *gw, float delta) 
         if(inimigo->noChao && !verificarSeTemChao(inimigo, gw->mapa)) {
             inimigo->vel.x = -inimigo->vel.x;
         }
+
+        inimigo->tempoFrame += delta;
+        if (inimigo->tempoFrame >= 0.15f) {
+            inimigo->tempoFrame = 0.0f;
+            inimigo->frameAtual = (inimigo->frameAtual + 1) % 4;
+        }
     }
 
 
@@ -62,7 +71,24 @@ void destruirInimigoNormal(InimigoNormal *inimigo) {
 void desenharInimigoNormal(InimigoNormal *inimigo) {
 
     if(inimigo->estaVivo) {
-        DrawRectangleRec(inimigo->ret, inimigo->cor);
+        float larguraFrame = (float) rm.texturaInimigoNormal.width / 4.0f;
+        Rectangle fonte = {
+            .x = inimigo->frameAtual * larguraFrame,
+            .y = 0,
+            .width = larguraFrame,
+            .height = (float) rm.texturaInimigoNormal.height
+        };
+        if (inimigo->vel.x > 0) {
+            fonte.width = -fonte.width;
+        }
+        DrawTexturePro(
+            rm.texturaInimigoNormal,
+            fonte,
+            inimigo->ret,
+            (Vector2) {0},
+            0.0f,
+            WHITE
+        );
     }
 
 }
