@@ -74,9 +74,7 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         
             atualizarMapa(gw->mapa, gw, delta);
             verificarMorteJogador(gw);
-        
             atualizarCamera(gw);
-        
             verificarGameOver(gw);
 
             break;

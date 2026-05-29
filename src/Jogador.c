@@ -5,8 +5,8 @@
 #include "Inimigo.h"
 #include "Mapa.h"
 
-static void resolverColisaoJogadorMapaX(Jogador *j, Mapa *mapa);
-static void resolverColisaoJogadorMapaY(Jogador *j, Mapa *mapa, float delta);
+static void resolverColisaoJogadorMapaX(GameWorld *gw);
+static void resolverColisaoJogadorMapaY(GameWorld *gw, float delta);
 static void verificarColisaoJogadorItem(GameWorld *gw);
 static void verificarColisaoJogadorInimigo(GameWorld *gw);
 
@@ -73,7 +73,7 @@ void entradaJogador(Jogador *j) {
 void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
 
     j->ret.x += j->vel.x * delta;
-    resolverColisaoJogadorMapaX(gw->mapa->jogador, gw->mapa);
+    resolverColisaoJogadorMapaX(gw);
 
     j->vel.y += gw->gravidade * delta;
 
@@ -82,7 +82,7 @@ void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
     }
 
     j->ret.y += j->vel.y * delta;
-    resolverColisaoJogadorMapaY(gw->mapa->jogador, gw->mapa, delta);
+    resolverColisaoJogadorMapaY(gw, delta);
 
     verificarColisaoJogadorInimigo(gw);
     verificarColisaoJogadorItem(gw);
@@ -102,7 +102,11 @@ void desenharJogador(Jogador *j) {
  * a largura e altura de do retangulo de colisao, se a altura for maior atualiza em X, caso contrario 
  * atualizza em Y
  */
-static void resolverColisaoJogadorMapaX(Jogador *j, Mapa *mapa) {
+static void resolverColisaoJogadorMapaX(GameWorld *gw) {
+
+    Jogador *j = gw->mapa->jogador;
+    Mapa *mapa = gw->mapa;
+
 
     ElementoMapa *el = mapa->obstaculos;
 
@@ -145,13 +149,36 @@ static void resolverColisaoJogadorMapaX(Jogador *j, Mapa *mapa) {
                     j->vel.x = 0;
                 }
             }
-        }
+
+        } else if (obs->tipo == OBSTACULO_CHEGADA) {
+
+            ObstaculoChegada *o = (ObstaculoChegada*) obs->objeto;
+
+            if (CheckCollisionRecs(j->ret, o->ret)) {
+
+                Rectangle retSobre = GetCollisionRec(j->ret, o->ret);
+
+                if (retSobre.width <= retSobre.height) {
+                    if (j->ret.x + j->ret.width / 2 < o->ret.x + o->ret.width / 2) {
+                        j->ret.x = o->ret.x - j->ret.width;
+                    } else {
+                        j->ret.x = o->ret.x + o->ret.width;
+                    }
+                    j->vel.x = 0;
+                }
+
+                gw->estado = ESTADO_JOGO_FIM;
+            }
+        } 
 
         el = el->proximo;
     }
 }
 
-static void resolverColisaoJogadorMapaY(Jogador *j, Mapa *mapa, float delta) {
+static void resolverColisaoJogadorMapaY(GameWorld *gw, float delta) {
+
+    Jogador *j = gw->mapa->jogador;
+    Mapa *mapa = gw->mapa;
 
     ElementoMapa *el = mapa->obstaculos;
 
@@ -177,6 +204,27 @@ static void resolverColisaoJogadorMapaY(Jogador *j, Mapa *mapa, float delta) {
                     }
                     j->vel.y = 0;
                 }
+            }
+            
+        } else if (obs->tipo == OBSTACULO_CHEGADA) {
+
+            ObstaculoChegada *o = (ObstaculoChegada*) obs->objeto;
+
+            if (CheckCollisionRecs(j->ret, o->ret)) {
+
+                Rectangle retSobre = GetCollisionRec(j->ret, o->ret);
+                
+                if (retSobre.height < retSobre.width) {
+                    if (j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2) {
+                        j->ret.y = o->ret.y - j->ret.height + 2;
+                        j->noChao = true;
+                    } else {
+                        j->ret.y = o->ret.y + o->ret.height;
+                    }
+                    j->vel.y = 0;
+                }
+
+                gw->estado = ESTADO_JOGO_FIM;
             }
             
         } else if (obs->tipo == OBSTACULO_MOVEL) {

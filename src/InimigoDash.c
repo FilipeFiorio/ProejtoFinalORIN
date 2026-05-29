@@ -1,9 +1,11 @@
 #include <stdlib.h>
+#include <math.h>
 
 #include "raylib/raylib.h"
 
 #include "Tipos.h"
 #include "InimigoDash.h"
+#include "ResourceManager.h"
 
 static void resolverColisaoInimigoMapaX(InimigoDash *i, Mapa *m);
 static void resolverColisaoInimigoMapaY( InimigoDash *i, Mapa *m);
@@ -26,6 +28,8 @@ InimigoDash *criarInimigoDash(float x, float y, float largura, float altura, flo
     novoInimigoDash->noChao = false;
     novoInimigoDash->velMaxQueda = 600;
     novoInimigoDash->velXInicial = novoInimigoDash->vel.x;
+    novoInimigoDash->frameAtual = 1;
+    novoInimigoDash->tempoFrame = 0.0f;
 
     return novoInimigoDash;
 
@@ -51,6 +55,17 @@ void atualizarInimigoDash(InimigoDash *inimigo, GameWorld *gw, float delta) {
         if(inimigo->noChao && !verificarSeTemChao(inimigo, gw->mapa)) {
             inimigo->vel.x = -inimigo->vel.x;
         }
+
+        bool isDashing = (fabs(inimigo->vel.x) > fabs(inimigo->velXInicial) * 1.5f);
+        if (isDashing) {
+            inimigo->frameAtual = 0;
+        } else {
+            inimigo->tempoFrame += delta;
+            if (inimigo->tempoFrame >= 0.15f) {
+                inimigo->tempoFrame = 0.0f;
+                inimigo->frameAtual = (inimigo->frameAtual == 1) ? 2 : 1;
+            }
+        }
     }
 
 }
@@ -66,7 +81,24 @@ void destruirInimigoDash(InimigoDash *inimigo) {
 void desenharInimigoDash(InimigoDash *inimigo) {
     
     if(inimigo->estaVivo) {
-        DrawRectangleRec(inimigo->ret, inimigo->cor);
+        float larguraFrame = (float) rm.texturaInimigoDash.width / 5.0f;
+        Rectangle fonte = {
+            .x = inimigo->frameAtual * larguraFrame,
+            .y = 1,
+            .width = larguraFrame,
+            .height = 38
+        };
+        if (inimigo->vel.x > 0) {
+            fonte.width = -fonte.width;
+        }
+        DrawTexturePro(
+            rm.texturaInimigoDash,
+            fonte,
+            inimigo->ret,
+            (Vector2) {0},
+            0.0f,
+            WHITE
+        );
     }
 
 }
