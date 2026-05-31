@@ -14,7 +14,9 @@ static bool verificarSeTemChao(InimigoNormal *i, Mapa *m);
 
 static void desenharAnimacaoInimigoNormal(InimigoNormal *inimigo, QuadroAnimacao *quadro, Color tonalidade);
 static Animacao *getAnimacaoAtualInimigoNormal(InimigoNormal *inimigo);
-static QuadroAnimacao *getQuadroAnimacaoAtualInimigoNormal(InimigoNormal *inimigo);
+
+
+static bool MOSTRAR_RETANGULO_COLISAO = true;
 
 InimigoNormal *criarInimigoNormal(float x, float y, float largura, float altura, Color cor) {
 
@@ -268,6 +270,10 @@ static void desenharAnimacaoInimigoNormal(InimigoNormal *inimigo, QuadroAnimacao
             tonalidade
         );
 
+       if ( MOSTRAR_RETANGULO_COLISAO) {
+            DrawRectangleRec(inimigo->ret, Fade(GREEN, 0.5f));
+        }
+
     }
 
 }
@@ -278,6 +284,6 @@ static Animacao *getAnimacaoAtualInimigoNormal(InimigoNormal *inimigo) {
 
 }
 
-static QuadroAnimacao *getQuadroAnimacaoAtualInimigoNormal(InimigoNormal *inimigo) {
+QuadroAnimacao *getQuadroAnimacaoAtualInimigoNormal(InimigoNormal *inimigo) {
     return getQuadroAtualAnimacao(getAnimacaoAtualInimigoNormal(inimigo));
 }

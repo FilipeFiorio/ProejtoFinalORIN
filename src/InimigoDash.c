@@ -16,7 +16,8 @@ static void dash(InimigoDash *i, float distancia);
 
 static void desenharAnimacaoInimigoDash(InimigoDash *inimigo, QuadroAnimacao *quadro, Color tonalidade);
 static Animacao *getAnimacaoAtualInimigoDash(InimigoDash *inimigo);
-static QuadroAnimacao *getQuadroAnimacaoAtualInimigoDash(InimigoDash *inimigo);
+
+static bool MOSTRAR_RETANGULO_COLISAO = true;
 
 InimigoDash *criarInimigoDash(float x, float y, float largura, float altura, float tamanhoDash, Color cor) {
 
@@ -300,6 +301,10 @@ static void desenharAnimacaoInimigoDash(InimigoDash *inimigo, QuadroAnimacao *qu
             tonalidade
         );
 
+        if ( MOSTRAR_RETANGULO_COLISAO) {
+            DrawRectangleRec(inimigo->ret ,Fade(GREEN, 0.5f));
+        }
+
     }
 }
 
@@ -309,7 +314,7 @@ static Animacao *getAnimacaoAtualInimigoDash(InimigoDash *inimigo) {
 
 }
 
-static QuadroAnimacao *getQuadroAnimacaoAtualInimigoDash(InimigoDash *inimigo) {
+QuadroAnimacao *getQuadroAnimacaoAtualInimigoDash(InimigoDash *inimigo) {
 
     return getQuadroAtualAnimacao(getAnimacaoAtualInimigoDash(inimigo));
 

@@ -6,3 +6,4 @@ InimigoDash *criarInimigoDash(float x, float y, float largura, float altura, flo
 void atualizarInimigoDash(InimigoDash *inimigo, GameWorld *gw, float delta);
 void destruirInimigoDash(InimigoDash *inimigo);
 void desenharInimigoDash(InimigoDash *inimigo);
+QuadroAnimacao *getQuadroAnimacaoAtualInimigoDash(InimigoDash *inimigo);

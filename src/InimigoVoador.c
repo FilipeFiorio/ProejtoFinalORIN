@@ -13,7 +13,8 @@ static void resolverColisaoInimigoMapaY(InimigoVoador *i, Mapa *m);
 
 static void desenharAnimacaoInimigoVoador(InimigoVoador *inimigo, QuadroAnimacao *quadro, Color tonalidade);
 static Animacao *getAnimacaoAtualInimigoVoador(InimigoVoador *inimigo);
-static QuadroAnimacao *getQuadroAnimacaoAtualInimigoVoador(InimigoVoador *inimigo);
+
+static bool MOSTRAR_RETANGULO_COLISAO = true;
 
 InimigoVoador *criarInimigoVoador(float x, float y, float largura, float altura, Vector2 deslocamento, Vector2 vel, Color cor) {
 
@@ -257,6 +258,10 @@ static void desenharAnimacaoInimigoVoador(InimigoVoador *inimigo, QuadroAnimacao
             tonalidade
         );
 
+        if(MOSTRAR_RETANGULO_COLISAO) {
+            DrawRectangleRec(inimigo->ret, Fade(GREEN, 0.5f));
+        }
+
     }
 }
 
@@ -265,7 +270,7 @@ static Animacao *getAnimacaoAtualInimigoVoador(InimigoVoador *inimigo) {
     return inimigo->animacoes[inimigo->estado];
 }
 
-static QuadroAnimacao *getQuadroAnimacaoAtualInimigoVoador(InimigoVoador *inimigo) {
+QuadroAnimacao *getQuadroAnimacaoAtualInimigoVoador(InimigoVoador *inimigo) {
 
     return getQuadroAtualAnimacao(getAnimacaoAtualInimigoVoador(inimigo));
 

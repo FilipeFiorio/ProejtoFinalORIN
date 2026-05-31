@@ -62,7 +62,6 @@ typedef enum EstadoItem {
 typedef struct QuadroAnimacao {
     Rectangle fonte;
     int duracao;
-    Rectangle colisao;
 } QuadroAnimacao;
 
 typedef struct Animacao{

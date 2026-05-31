@@ -4,6 +4,7 @@
 #include "Tipos.h"
 #include "Inimigo.h"
 #include "Mapa.h"
+#include "InimigoNormal.h"
 
 static void resolverColisaoJogadorMapaX(GameWorld *gw);
 static void resolverColisaoJogadorMapaY(GameWorld *gw, float delta);
@@ -325,8 +326,8 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
                 Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
 
-                if(retSobreposicao.height < retSobreposicao.width) {
-                    if (j->vel.y > 0) {
+                if(retSobreposicao.height < retSobreposicao.width + 5) {
+                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
                         i->estaVivo = false;
                         j->vel.y = -j->vel.y * 0.75f;
                     } else {
@@ -356,8 +357,8 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
                 Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
 
-                if(retSobreposicao.height < retSobreposicao.width) {
-                    if (j->vel.y > 0) {
+                if(retSobreposicao.height < retSobreposicao.width + 5) {
+                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
                         i->estaVivo = false;
                         j->vel.y = -j->vel.y * 0.75f;
                     } else {
@@ -388,7 +389,7 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
                 Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
 
                 //talvez melhorar
-                if(retSobreposicao.height < retSobreposicao.width) {
+                if(retSobreposicao.height < retSobreposicao.width + 5) {
                     if (j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
                         i->estaVivo = false;
                         j->vel.y = -j->vel.y * 0.75f;

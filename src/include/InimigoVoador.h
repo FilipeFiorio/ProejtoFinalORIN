@@ -6,3 +6,4 @@ InimigoVoador *criarInimigoVoador(float x, float y, float largura, float altura,
 void atualizarInimigoVoador(InimigoVoador *inimigo, GameWorld *gw, float delta);
 void destruirInimigoVoador(InimigoVoador *inimigo);
 void desenharInimigoVoador(InimigoVoador *inimigo);
+QuadroAnimacao *getQuadroAnimacaoAtualInimigoVoador(InimigoVoador *inimigo);
