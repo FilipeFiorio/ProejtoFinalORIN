@@ -67,6 +67,7 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
         0
     );
 
+    
     novoJogador->animacaoAndando.quantidadeQuadros = 4;
     novoJogador->animacaoAndando.quadroAtual = 0;
     novoJogador->animacaoAndando.contadorTempoQuadro = 0;
