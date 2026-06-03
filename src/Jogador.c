@@ -1,5 +1,8 @@
 #include <stdlib.h>
+#include <stdio.h>
+
 #include "raylib/raylib.h"
+
 #include "Jogador.h"
 #include "Tipos.h"
 #include "Inimigo.h"
@@ -39,10 +42,14 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
     novoJogador->velPulo = -425;
     novoJogador->velPuloCorrendo = -525;
     novoJogador->velMaxQueda = 600;
+    novoJogador->velFreio = 1000;
+    novoJogador->velDesacelarar = 800;
+    novoJogador->velAcelerar = 600;
+    novoJogador->velMax = 0;
 
     novoJogador->noChao = false;
     novoJogador->morto = false;
-    novoJogador->paraDireita = false;
+    novoJogador->paraDireita = true;
 
     novoJogador->estado = JOGADOR_PARADO;
 
@@ -179,46 +186,93 @@ void entradaJogador(Jogador *j) {
     
     if(j->estado != JOGADOR_MORRENDO) {
 
-            bool correr = IsKeyDown(KEY_LEFT_SHIFT) || (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT));
-            bool esquerda = IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT) || (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT));
-            bool direita = IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT) || (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT));
+        EstadoJogador estadoAnterior = j->estado;
+
+        bool correr = IsKeyDown(KEY_LEFT_SHIFT) || (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT));
+        bool esquerda = IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT) || (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT));
+        bool direita = IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT) || (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT));
             
-            if(esquerda) {
-                j->vel.x = correr ? -j->velCorrendo : -j->velAndando;
-                j->paraDireita = true;
-            } else if (direita) {
-                j->vel.x = correr ? j->velCorrendo : j->velAndando;
-                j->paraDireita = false;
-            } else {
-                j->vel.x = 0;
-            }
-            
-            if(j->vel.x != 0 && j->noChao) {
-                if(correr) {
-                    j->estado = JOGADOR_CORRENDO;
-                } else {
-                    j->estado = JOGADOR_ANDANDO;
+
+        j->velMax = correr? j->velCorrendo : j->velAndando;
+
+        if(esquerda) {
+            j->paraDireita = false;
+
+            if(j->vel.x > 0) {
+                j->vel.x -= j->velFreio * GetFrameTime();
+                 if(j->vel.x < 0) {
+                    j->vel.x = 0;
                 }
-            } 
-        
-            bool pular = IsKeyPressed(KEY_SPACE) || (IsGamepadAvailable(0) && IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN));
-        
-            if(pular && j->noChao) {
-                j->vel.y = correr ? j->velPuloCorrendo : j->velPulo;
-                j->noChao = false;
+            } else {
+                j->vel.x -= j->velAcelerar * GetFrameTime();
+                if(j->vel.x < -j->velMax) {
+                    j->vel.x = -j->velMax;
+                }
             }
-        
-            if(j->vel.y != 0) {
-                j->estado = JOGADOR_PULANDO;
+                
+        } else if (direita) {
+            j->paraDireita = true;
+            
+            if(j->vel.x < 0) {
+                j->vel.x += j->velFreio * GetFrameTime();
+                if(j->vel.x > 0) {
+                    j->vel.x = 0;
+                }
+    
+            } else {
+                j->vel.x += j->velAcelerar * GetFrameTime();
+                if(j->vel.x > j->velMax) {
+                    j->vel.x = j->velMax;
+                }
             }
-        
-            if(!direita && !esquerda && j->noChao) {
-                j->estado = JOGADOR_PARADO;
+
+        } else {
+            if ( j->vel.x > 0 ) {
+                j->vel.x -= j->velDesacelarar * GetFrameTime();
+                    if ( j->vel.x < 0 ) {
+                        j->vel.x = 0;
+                    }
+            } else if ( j->vel.x < 0 ) {
+                j->vel.x += j->velDesacelarar * GetFrameTime();
+                if ( j->vel.x > 0 ) {
+                    j->vel.x = 0;
+                }
             }
+        }
+            
+        if(j->vel.x != 0 && j->noChao) {
+            if(correr) {
+                j->estado = JOGADOR_CORRENDO;
+            } else {
+                j->estado = JOGADOR_ANDANDO;
+            }
+        } 
         
+        bool pular = IsKeyPressed(KEY_SPACE) || (IsGamepadAvailable(0) && IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN));
+        
+        if(pular && j->noChao) {
+            j->vel.y = correr ? j->velPuloCorrendo : j->velPulo;
             j->noChao = false;
+        }
+        
+        if(j->vel.y != 0) {
+            j->estado = JOGADOR_PULANDO;
+        }
+        
+        if(!direita && !esquerda && j->noChao) {
+            j->estado = JOGADOR_PARADO;
+        }
+        
+        //printf("vel.x: %f, velMax: %f, noChao: %d\n", j->vel.x, j->velMax, j->noChao);
+
+        if(estadoAnterior == JOGADOR_ANDANDO && j->estado == JOGADOR_CORRENDO) {
+            sincronizarAnimacao(&j->animacaoCorrendo, &j->animacaoAndando);
+        } else if(estadoAnterior == JOGADOR_CORRENDO && j->estado == JOGADOR_ANDANDO) {
+            sincronizarAnimacao(&j->animacaoAndando, &j->animacaoCorrendo);
+        }
 
     }
+
 }
 
 void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
@@ -230,27 +284,34 @@ void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
         if(j->estado == JOGADOR_MORRENDO && animacaoAtual->finalizada) {
             j->morto = true;
         }
-    
-        verificarColisaoJogadorItem(gw);
+
+        if(j->estado != JOGADOR_MORRENDO) {
+
+            verificarColisaoJogadorItem(gw);
+            
+            j->ret.x += j->vel.x * delta;
+            resolverColisaoJogadorMapaX(gw);
         
-        j->ret.x += j->vel.x * delta;
-        resolverColisaoJogadorMapaX(gw);
-    
-        j->vel.y += gw->gravidade * delta;
-    
-        if(j->vel.y > j->velMaxQueda) {
-            j->vel.y = j->velMaxQueda;
+            j->vel.y += gw->gravidade * delta;
+        
+            if(j->vel.y > j->velMaxQueda) {
+                j->vel.y = j->velMaxQueda;
+            }
+        
+            j->ret.y += j->vel.y * delta;
+            resolverColisaoJogadorMapaY(gw, delta);
+        
+            verificarColisaoJogadorInimigo(gw);
+        
+            if(j->moedas >= 100) {
+                j->moedas -= 100;
+                j->vidas++;
+            }
+
         }
+
+
     
-        j->ret.y += j->vel.y * delta;
-        resolverColisaoJogadorMapaY(gw, delta);
-    
-        verificarColisaoJogadorInimigo(gw);
-    
-        if(j->moedas >= 100) {
-            j->moedas -= 100;
-            j->vidas++;
-        }
 
     }
 
@@ -302,7 +363,9 @@ static void resolverColisaoJogadorMapaX(GameWorld *gw) {
 
                 Rectangle retSobre = GetCollisionRec(j->ret, o->ret);
 
-                if (retSobre.width <= retSobre.height) {
+                // por algum motivo, a colisao do jogador é 1 pixel pra baixo, assim todo vez sua velocidade
+                // é zerado todo frame, entao subtrai -2
+                if (retSobre.width <= retSobre.height - 2) {
                     if (j->ret.x + j->ret.width / 2 < o->ret.x + o->ret.width / 2) {
                         j->ret.x = o->ret.x - j->ret.width;
                     } else {
@@ -320,7 +383,7 @@ static void resolverColisaoJogadorMapaX(GameWorld *gw) {
 
                 Rectangle retSobre = GetCollisionRec(j->ret, o->ret);
 
-                if (retSobre.width <= retSobre.height) {
+                if (retSobre.width <= retSobre.height - 2) {
                     if (j->ret.x + j->ret.width / 2 < o->ret.x + o->ret.width / 2) {
                         j->ret.x = o->ret.x - j->ret.width;
                     } else {
@@ -338,7 +401,7 @@ static void resolverColisaoJogadorMapaX(GameWorld *gw) {
 
                 Rectangle retSobre = GetCollisionRec(j->ret, o->ret);
 
-                if (retSobre.width <= retSobre.height) {
+                if (retSobre.width <= retSobre.height - 2) {
                     if (j->ret.x + j->ret.width / 2 < o->ret.x + o->ret.width / 2) {
                         j->ret.x = o->ret.x - j->ret.width;
                     } else {
@@ -623,7 +686,7 @@ static void desenharAnimacaoJogador(Jogador *j, QuadroAnimacao *quadro, Color to
             (Rectangle) {
                 quadro->fonte.x,
                 quadro->fonte.y,
-                j->paraDireita ? -quadro->fonte.width : quadro->fonte.width,
+                j->paraDireita ? quadro->fonte.width : -quadro->fonte.width,
                 quadro->fonte.height
             },
             j->ret,

@@ -312,7 +312,6 @@ static void desenharHud(GameWorld *gw) {
     sprintf(textoHudJogador, "Vidas: %d   Moedas: %d", gw->mapa->jogador->vidas, gw->mapa->jogador->moedas);
     sprintf(textoHudTempo, "Tempo: %ds", gw->timerJogo / 1000);
     drawTextAlinhado(textoHudJogador, 10, 20, WHITE, ESQUERDA);
-    drawTextAlinhado(textoHudJogador, 10, 20, WHITE, DIREITA);
     drawTextAlinhado(textoHudTempo, 10, 20, WHITE, CENTRO);
 
 }

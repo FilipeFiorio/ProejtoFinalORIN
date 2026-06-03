@@ -87,14 +87,21 @@ typedef struct Jogador {
     Color cor;
     int vidas;
     int moedas;
+
     float velAndando;
     float velCorrendo;
     float velPulo;
     float velPuloCorrendo;
     float velMaxQueda;
+    float velFreio;
+    float velDesacelarar;
+    float velAcelerar;
+    float velMax;
+
     bool noChao;
     bool morto;
     bool paraDireita;
+
     EstadoJogador estado;
 
     Animacao *animacoes[5];
