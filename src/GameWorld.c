@@ -128,6 +128,8 @@ void drawGameWorld( GameWorld *gw ) {
     
     BeginDrawing();
 
+    DrawFPS(GetScreenWidth() - 100, 50);
+
     switch (gw->estado) {
 
         case ESTADO_JOGO_GAMEPLAY:

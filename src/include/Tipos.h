@@ -36,7 +36,12 @@ typedef enum TipoObstaculo {
 typedef enum TipoInimigo {
     INIMIGO_NORMAL,
     INIMIGO_VOADOR,
-    INIMIGO_DASH
+    INIMIGO_DASH,
+    INIMIGO_ESPINHO,
+    INIMIGO_FANTASMA,
+    INIMIGO_PLANTA,
+    INIMIGO_PEDRA,
+    INIMIGO_PLANTA_GELO
 }TipoInimigo;
 
 typedef enum TipoItem {
@@ -60,6 +65,15 @@ typedef enum EstadoInimigoVoador {
     INIMIGO_VOADOR_VOANDO,
     INIMIGO_VOADOR_MORRENDO
 } EstadoInimigoVoador;
+
+typedef enum EstadoInimigoEspinho {
+    INIMIGO_ESPINHO_ANDANDO,
+} EstadoInimigoEspinho;
+
+typedef enum EstadoInimigoFantasma {
+    INIMIGO_FANTASMA_VOANDO,
+    INIMIGO_FANTASMA_PARADO
+} EstadoInimigoFantasma;
 
 typedef enum EstadoItem {
     ITEM_GIRANDO,
@@ -176,6 +190,38 @@ typedef struct InimigoVoador {
     Animacao animacaoMorrendo;
 
 }InimigoVoador;
+
+typedef struct InimigoEspinho {
+    Rectangle ret;
+    Color cor;
+    Vector2 vel;
+    float velMaxQueda;
+    bool estaVivo;
+    bool paraDireita;
+    bool noChao;
+
+    EstadoInimigoEspinho estado;
+
+    Animacao *animacoes[1];
+    int quantidadeAnimacoes;
+
+    Animacao animacaoAndando;
+} InimigoEspinho;
+
+typedef struct InimigoFantasma {
+    Rectangle ret;
+    Color cor;
+    Vector2 vel;
+    bool estaVivo;
+    bool paraDireita;
+    EstadoInimigoFantasma estado;
+
+    Animacao *animacoes[2];
+    int quantidadeAnimacoes;
+
+    Animacao animacaoVoando;
+    Animacao animacaoParado;
+} InimigoFantasma;
 
 typedef struct Obstaculo {
     void *objeto;
