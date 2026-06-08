@@ -15,6 +15,11 @@
 #include "InimigoNormal.h"
 #include "InimigoDash.h"
 #include "InimigoVoador.h"
+#include "InimigoEspinho.h"
+#include "InimigoFantasma.h"
+#include "InimigoPedra.h"
+#include "InimigoPlanta.h"
+#include "InimigoPlantaGelo.h"
 #include "Item.h"
 #include "ItemMoeda.h"
 #include "ItemMoedaEspecial.h"
@@ -236,6 +241,40 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
                                 (Vector2) {0, 75},
                                 RED
                             );
+                            el->objeto = inimigo;
+                            el->tipo = ELEMENTO_MAPA_INIMIGO;
+                            inserirInimigo(novoMapa, el);
+                            break;
+
+                        case '5':
+                            
+                            inimigo = criarInimigo(INIMIGO_ESPINHO);
+
+                            inimigo->objeto = criarInimigoEspinho(
+                                colunaAtual * novoMapa->tamanhoElemento,
+                                linhaAtual * novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                RED
+                            );
+
+                            el->objeto = inimigo;
+                            el->tipo = ELEMENTO_MAPA_INIMIGO;
+                            inserirInimigo(novoMapa, el);
+                            break;
+
+                        case '6':
+                            
+                            inimigo = criarInimigo(INIMIGO_FANTASMA);
+
+                            inimigo->objeto = criarInimigoFantasma(
+                                colunaAtual * novoMapa->tamanhoElemento,
+                                linhaAtual * novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                RED
+                            );
+
                             el->objeto = inimigo;
                             el->tipo = ELEMENTO_MAPA_INIMIGO;
                             inserirInimigo(novoMapa, el);

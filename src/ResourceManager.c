@@ -21,6 +21,11 @@ void loadResourcesResourceManager( void ) {
     rm.texturaInimigoNormal = LoadTexture("resources/images/sprites/inimigoNormal.png");
     rm.texturaInimigoDash = LoadTexture("resources/images/sprites/inimigoDash.png");
     rm.texturaInimigoVoador = LoadTexture("resources/images/sprites/inimigoVoador.png");
+    rm.texturaInimigoEspinho = LoadTexture("resources/images/sprites/InimigoEspinho.png");
+    rm.texturaInimigoFantasma = LoadTexture("resources/images/sprites/InimigoFantasma.png");
+    rm.texturaInimigoPedra = LoadTexture("resources/images/sprites/InimigoPedra.png");
+    rm.texturaInimigoPlanta = LoadTexture("resources/images/sprites/InimigoPlanta.png");
+    rm.texturaInimigoPlantaGelo = LoadTexture("resources/images/sprites/InimigoPlantaGelo.png");
     rm.texturaItens = LoadTexture("resources/images/sprites/itens.png");
     rm.texturaInimigoMorrendo = LoadTexture("resources/images/sprites/morteInimigo.png");
     rm.texturaJogador = LoadTexture("resources/images/sprites/jogador.png");
