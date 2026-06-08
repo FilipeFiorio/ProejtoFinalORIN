@@ -17,7 +17,8 @@ typedef enum EstadoJogador {
     JOGADOR_ANDANDO,
     JOGADOR_CORRENDO,
     JOGADOR_PULANDO,
-    JOGADOR_MORRENDO
+    JOGADOR_MORRENDO,
+    JOGADOR_FREANDO
 } EstadoJogador;
 
 typedef enum TipoElementoMapa {
@@ -122,10 +123,11 @@ typedef struct Jogador {
     bool noChao;
     bool morto;
     bool paraDireita;
+    bool freando;
 
     EstadoJogador estado;
 
-    Animacao *animacoes[5];
+    Animacao *animacoes[6];
     int quantidadeAnimacoes;
 
     Animacao animacaoParado;
@@ -133,6 +135,7 @@ typedef struct Jogador {
     Animacao animacaoCorrendo;
     Animacao animacaoPulando;
     Animacao animacaoMorrendo;
+    Animacao animacaoFreando;
 
 } Jogador;
 
@@ -336,8 +339,6 @@ struct ElementoMapa {
     TipoElementoMapa tipo;
     ElementoMapa *proximo;
 };
-
-
 
 typedef struct Mapa {
     ElementoMapa *obstaculos;

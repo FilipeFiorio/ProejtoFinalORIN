@@ -42,7 +42,7 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
     novoJogador->velPulo = -425;
     novoJogador->velPuloCorrendo = -525;
     novoJogador->velMaxQueda = 600;
-    novoJogador->velFreio = 1000;
+    novoJogador->velFreio = 1100;
     novoJogador->velDesacelarar = 800;
     novoJogador->velAcelerar = 600;
     novoJogador->velMax = 0;
@@ -50,6 +50,7 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
     novoJogador->noChao = false;
     novoJogador->morto = false;
     novoJogador->paraDireita = true;
+    novoJogador->freando = false;
 
     novoJogador->estado = JOGADOR_PARADO;
 
@@ -151,6 +152,25 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
         0
     );
 
+    novoJogador->animacaoFreando.quantidadeQuadros = 1;
+    novoJogador->animacaoFreando.quadroAtual = 0;
+    novoJogador->animacaoFreando.contadorTempoQuadro = 0;
+    novoJogador->animacaoFreando.finalizada = false;
+    novoJogador->animacaoFreando.executarUmaVez = false;
+    novoJogador->animacaoFreando.pararNoUltimoQuadro = false;
+    criarQuadroAnimacao(&novoJogador->animacaoFreando, novoJogador->animacaoFreando.quantidadeQuadros);
+    inicializarQuadroAnimacao(
+        novoJogador->animacaoFreando.quadros,
+        novoJogador->animacaoFreando.quantidadeQuadros,
+        1000,
+        0,
+        64,
+        16,
+        16,
+        false,
+        1
+    );
+
     novoJogador->animacoes[JOGADOR_PARADO] = &novoJogador->animacaoParado;
     quantidadeAnimacoes++;
 
@@ -164,6 +184,9 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
     quantidadeAnimacoes++;
 
     novoJogador->animacoes[JOGADOR_MORRENDO] = &novoJogador->animacaoMorrendo;
+    quantidadeAnimacoes++;
+
+    novoJogador->animacoes[JOGADOR_FREANDO] = &novoJogador->animacaoFreando;
     quantidadeAnimacoes++;
 
     novoJogador->quantidadeAnimacoes = quantidadeAnimacoes;
@@ -200,8 +223,10 @@ void entradaJogador(Jogador *j) {
 
             if(j->vel.x > 0) {
                 j->vel.x -= j->velFreio * GetFrameTime();
+                j->freando = true;
                  if(j->vel.x < 0) {
                     j->vel.x = 0;
+                    j->freando = false;
                 }
             } else {
                 j->vel.x -= j->velAcelerar * GetFrameTime();
@@ -215,8 +240,10 @@ void entradaJogador(Jogador *j) {
             
             if(j->vel.x < 0) {
                 j->vel.x += j->velFreio * GetFrameTime();
+                j->freando = true;
                 if(j->vel.x > 0) {
                     j->vel.x = 0;
+                    j->freando = false;
                 }
     
             } else {
@@ -247,6 +274,10 @@ void entradaJogador(Jogador *j) {
                 j->estado = JOGADOR_ANDANDO;
             }
         } 
+
+        if(j->freando) {
+            j->estado = JOGADOR_FREANDO;
+        }
         
         bool pular = IsKeyPressed(KEY_SPACE) || (IsGamepadAvailable(0) && IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN));
         
@@ -332,6 +363,9 @@ void desenharJogador(Jogador *j) {
         QuadroAnimacao *quadro = getQuadroAnimacaoAtualJogador(j);
         desenharAnimacaoJogador(j, quadro, WHITE);
     } else if(j->estado == JOGADOR_MORRENDO) {
+        QuadroAnimacao *quadro = getQuadroAnimacaoAtualJogador(j);
+        desenharAnimacaoJogador(j, quadro, WHITE);
+    } else if(j->estado == JOGADOR_FREANDO) {
         QuadroAnimacao *quadro = getQuadroAnimacaoAtualJogador(j);
         desenharAnimacaoJogador(j, quadro, WHITE);
     }
