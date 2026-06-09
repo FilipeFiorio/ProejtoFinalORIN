@@ -52,6 +52,9 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
     novoJogador->paraDireita = true;
     novoJogador->freando = false;
 
+    novoJogador->congelado = false;
+    novoJogador->contadorTempoCongelado = 0;
+
     novoJogador->estado = JOGADOR_PARADO;
 
     int quantidadeAnimacoes = 0;
@@ -293,8 +296,6 @@ void entradaJogador(Jogador *j) {
         if(!direita && !esquerda && j->noChao) {
             j->estado = JOGADOR_PARADO;
         }
-        
-        //printf("vel.x: %f, velMax: %f, noChao: %d\n", j->vel.x, j->velMax, j->noChao);
 
         if(estadoAnterior == JOGADOR_ANDANDO && j->estado == JOGADOR_CORRENDO) {
             sincronizarAnimacao(&j->animacaoCorrendo, &j->animacaoAndando);
@@ -309,6 +310,22 @@ void entradaJogador(Jogador *j) {
 void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
 
     if(!j->morto) {
+
+        if(j->congelado) {
+            j->velAcelerar = 100;
+            j->velDesacelarar = 100;
+            j->velFreio = 100;
+
+            j->contadorTempoCongelado += delta * 1000;
+
+            if(j->contadorTempoCongelado >= 2000) {
+                j->congelado = false;
+                j->contadorTempoCongelado = 0;
+                j->velFreio = 1100;
+                j->velDesacelarar = 800;
+                j->velAcelerar = 600;
+            }
+        }
         
         Animacao *animacaoAtual = getAnimacaoAtualJogador(j);
         atualizarAnimacao(animacaoAtual, delta);
@@ -341,9 +358,6 @@ void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
 
         }
 
-
-    
-
     }
 
 }
@@ -351,7 +365,7 @@ void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
 void desenharJogador(Jogador *j) {
     
     QuadroAnimacao *quadro = getQuadroAnimacaoAtualJogador(j);
-    desenharAnimacaoJogador(j, quadro, WHITE);
+    desenharAnimacaoJogador(j, quadro, j->congelado ? BLUE : WHITE);
 
         
 }
@@ -820,6 +834,43 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
             if(i->tiro != NULL && i->tiro->ativo && i->tiro->estado == TIRO_VIAJANDO) {
                 if(CheckCollisionRecs(j->ret, i->tiro->ret)) {
                     j->estado = JOGADOR_MORRENDO;
+                }
+            }
+
+        } else if (inimigo->tipo == INIMIGO_PLANTA_GELO) {
+
+            InimigoPlantaGelo *i = (InimigoPlantaGelo*) inimigo->objeto;
+
+            if (CheckCollisionRecs(j->ret, i->ret)) {
+
+                Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
+
+                //talvez melhorar
+                if(retSobreposicao.height < retSobreposicao.width + 5) {
+                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
+                        j->ret.y = i->ret.y - j->ret.height;
+                        j->estado = JOGADOR_MORRENDO;
+                    } else {
+                        j->ret.y = i->ret.y + j->ret.height;
+                        j->estado = JOGADOR_MORRENDO;
+                    }
+                } else {
+
+                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
+                        j->ret.x = i->ret.x + i->ret.width;
+                    } else {
+                        j->ret.x = i->ret.x - j->ret.width;
+                    }
+                    j->estado = JOGADOR_MORRENDO;
+
+                }
+
+                return;
+            }
+
+            if(i->tiro != NULL && i->tiro->ativo && i->tiro->estado == TIRO_VIAJANDO) {
+                if(CheckCollisionRecs(j->ret, i->tiro->ret)) {
+                    j->congelado = true;
                 }
             }
 

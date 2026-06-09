@@ -2,8 +2,8 @@
 
 #include "Tipos.h"
 
-InimigoEspinho *criarInimigoEspinho(float x, float y, float largura, float altura, Color cor);
-void atualizarInimigoEspinho(InimigoEspinho *inimigo, GameWorld *gw, float delta);
-void destruirInimigoEspinho(InimigoEspinho *inimigo);
-void desenharInimigoEspinho(InimigoEspinho *inimigo);
-QuadroAnimacao *getQuadroAnimacaoAtualInimigoEspinho(InimigoEspinho *inimigo);
+InimigoPlantaGelo *criarInimigoPlantaGelo(float x, float y, float largura, float altura, Color cor);
+void atualizarInimigoPlantaGelo(InimigoPlantaGelo *inimigo, GameWorld *gw, float delta);
+void destruirInimigoPlantaGelo(InimigoPlantaGelo *inimigo);
+void desenharInimigoPlantaGelo(InimigoPlantaGelo *inimigo);
+QuadroAnimacao *getQuadroAnimacaoAtualInimigoPlantaGelo(InimigoPlantaGelo *inimigo);

@@ -90,7 +90,6 @@ void atualizarInimigoPlanta(InimigoPlanta *inimigo, GameWorld *gw, float delta) 
     atualizarAnimacao(animacaoAtual, delta);
 
     inimigo->coolDownTiro += delta * 1000;
-    printf("%.2f\n", inimigo->coolDownTiro);
 
     Rectangle ret = {
         inimigo->ret.x - 400,

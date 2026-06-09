@@ -2,7 +2,8 @@
 
 #include "Tipos.h"
 
-TiroGelo *criarTiroGelo(InimigoPlanta *inimigo);
+TiroGelo *criarTiroGelo(InimigoPlantaGelo *inimigo);
 void atualizarTiroGelo(TiroGelo *tiro, GameWorld *gw, float delta);
 void destruirTiroGelo(TiroGelo *tiro);
 void desenharTiroGelo(TiroGelo *tiro);
+QuadroAnimacao *getQuadroAnimacaoAtualTiroGelo(TiroGelo *tiro);

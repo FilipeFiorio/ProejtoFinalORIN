@@ -315,6 +315,23 @@ Mapa *carregarMapa( const char *caminhoArquivo ) {
                             el->tipo = ELEMENTO_MAPA_INIMIGO;
                             inserirInimigo(novoMapa, el);
                             break;
+
+                        case '9':
+
+                            inimigo = criarInimigo(INIMIGO_PLANTA_GELO);
+
+                            inimigo->objeto = criarInimigoPlantaGelo(
+                                colunaAtual * novoMapa->tamanhoElemento,
+                                linhaAtual * novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                novoMapa->tamanhoElemento,
+                                RED
+                            );
+
+                            el->objeto = inimigo;
+                            el->tipo = ELEMENTO_MAPA_INIMIGO;
+                            inserirInimigo(novoMapa, el);
+                            break;
                             
                         default:
                             free(el);

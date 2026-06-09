@@ -140,6 +140,9 @@ typedef struct Jogador {
     bool paraDireita;
     bool freando;
 
+    bool congelado;
+    int contadorTempoCongelado;
+
     EstadoJogador estado;
 
     Animacao *animacoes[6];
@@ -298,7 +301,7 @@ typedef struct TiroGelo {
     bool paraDireita;
     float velX;
     float xIni;
-    float DistanciaMax;
+    float distanciaMax;
     EstadoTiro estado;
 
     Animacao *animacoes[2];
@@ -324,6 +327,22 @@ typedef struct InimigoPlanta {
     Animacao animacaoAtirando;
 
 } InimigoPlanta;
+
+typedef struct InimigoPlantaGelo {
+    Rectangle ret;
+    Color cor;
+    float coolDownTiro;
+    bool paraDireita;
+    EstadoInimigoPlanta estado;
+    TiroGelo *tiro;
+
+    Animacao *animacoes[2];
+    int quantidadeAnimacoes;
+
+    Animacao animacaoParado;
+    Animacao animacaoAtirando;
+
+} InimigoPlantaGelo;
 
 typedef struct Obstaculo {
     void *objeto;
