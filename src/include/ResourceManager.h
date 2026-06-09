@@ -22,6 +22,7 @@ typedef struct ResourceManager {
     Texture2D texturaInimigoPlantaGelo; 
     Texture2D texturaInimigoFantasma;
     Texture2D texturaItens;
+    Texture2D texturaTiro;
     Texture2D texturaInimigoMorrendo;
     Texture2D texturaJogador;
 

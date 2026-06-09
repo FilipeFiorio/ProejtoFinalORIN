@@ -51,6 +51,11 @@ typedef enum TipoItem {
     ITEM_VIDA
 } TipoItem;
 
+typedef enum TipoTiro {
+    TIRO_NORMAL,
+    TIRO_GELO
+} TipoTiro;
+
 typedef enum EstadoInimigoNormal {
     INIMIGO_NORMAL_ANDANDO,
     INIMIGO_NORMAL_MORRENDO
@@ -83,10 +88,20 @@ typedef enum EstadoInimigoPedra {
     INIMIGO_PEDRA_DESCENDO
 } EstadoInimigoPedra;
 
+typedef enum EstadoInimigoPlanta {
+    INIMIGO_PLANTA_PARADO,
+    INIMIGO_PLANTA_ATIRANDO
+}EstadoInimigoPlanta;
+
 typedef enum EstadoItem {
     ITEM_GIRANDO,
     ITEM_COLETADO
 } EstadoItem;
+
+typedef enum EstadoTiro {
+    TIRO_VIAJANDO,
+    TIRO_DISPERSADO
+} EstadoTiro;
  
 typedef struct QuadroAnimacao {
     Rectangle fonte;
@@ -243,16 +258,75 @@ typedef struct InimigoPedra {
     bool estaVivo;
     bool retornando;
     EstadoInimigoPedra estado;
-
+    
     Animacao *animacoes[4];
     int quantidadeAnimacoes;
-
+    
     Animacao animacaoParado;
     Animacao animacaoOlhoEsquerdo;
     Animacao animacaoOlhoDireito;
     Animacao animacaoDescendo;
-
+    
 } InimigoPedra;
+
+typedef struct Tiro {
+    void *objeto;
+    TipoTiro tipo;
+} Tiro;
+
+typedef struct TiroNormal {
+
+    Rectangle ret;
+    Color cor;
+    bool ativo;
+    bool paraDireita;
+    float velX;
+    float xIni;
+    float distanciaMax;
+    EstadoTiro estado;
+
+    Animacao *animacoes[2];
+    int quantidadeAnimacoes;
+
+    Animacao animacaoViajando;
+    Animacao animacaoDispersado;
+
+}TiroNormal;
+
+typedef struct TiroGelo {
+
+    Rectangle ret;
+    Color cor;
+    bool ativo;
+    bool paraDireita;
+    float velX;
+    float xIni;
+    float DistanciaMax;
+    EstadoTiro estado;
+
+    Animacao *animacoes[2];
+    int quantidadeAnimacoes;
+
+    Animacao animacaoViajando;
+    Animacao animacaoDispersado;
+
+} TiroGelo;
+
+typedef struct InimigoPlanta {
+    Rectangle ret;
+    Color cor;
+    float coolDownTiro;
+    bool paraDireita;
+    EstadoInimigoPlanta estado;
+    TiroNormal *tiro;
+
+    Animacao *animacoes[2];
+    int quantidadeAnimacoes;
+
+    Animacao animacaoParado;
+    Animacao animacaoAtirando;
+
+} InimigoPlanta;
 
 typedef struct Obstaculo {
     void *objeto;
