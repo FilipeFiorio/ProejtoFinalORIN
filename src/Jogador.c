@@ -159,13 +159,13 @@ Jogador *criarJogador(float x, float y, float largura, float altura, Color cor) 
     novoJogador->animacaoFreando.quadroAtual = 0;
     novoJogador->animacaoFreando.contadorTempoQuadro = 0;
     novoJogador->animacaoFreando.finalizada = false;
-    novoJogador->animacaoFreando.executarUmaVez = false;
+    novoJogador->animacaoFreando.executarUmaVez = true;
     novoJogador->animacaoFreando.pararNoUltimoQuadro = false;
     criarQuadroAnimacao(&novoJogador->animacaoFreando, novoJogador->animacaoFreando.quantidadeQuadros);
     inicializarQuadroAnimacao(
         novoJogador->animacaoFreando.quadros,
         novoJogador->animacaoFreando.quantidadeQuadros,
-        1000,
+        500,
         0,
         64,
         16,
@@ -229,7 +229,7 @@ void entradaJogador(Jogador *j) {
                 j->freando = true;
                  if(j->vel.x < 0) {
                     j->vel.x = 0;
-                    j->freando = false;
+                    
                 }
             } else {
                 j->vel.x -= j->velAcelerar * GetFrameTime();
@@ -246,7 +246,7 @@ void entradaJogador(Jogador *j) {
                 j->freando = true;
                 if(j->vel.x > 0) {
                     j->vel.x = 0;
-                    j->freando = false;
+                   
                 }
     
             } else {
@@ -331,6 +331,10 @@ void atualizarJogador(Jogador *j, GameWorld *gw, float delta) {
         atualizarAnimacao(animacaoAtual, delta);
         if(j->estado == JOGADOR_MORRENDO && animacaoAtual->finalizada) {
             j->morto = true;
+        }
+
+        if(j->freando && animacaoAtual->finalizada) {
+            j->freando = false;
         }
 
         if(j->estado != JOGADOR_MORRENDO) {
@@ -470,7 +474,7 @@ static void resolverColisaoJogadorMapaY(GameWorld *gw, float delta) {
                 Rectangle retSobre = GetCollisionRec(j->ret, o->ret);
 
                 
-                if (retSobre.height < retSobre.width) {
+                if (retSobre.height < retSobre.width + 2) {
                     if (j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2) {
                         j->ret.y = o->ret.y - j->ret.height + 2;
                         j->noChao = true;
@@ -489,7 +493,7 @@ static void resolverColisaoJogadorMapaY(GameWorld *gw, float delta) {
 
                 Rectangle retSobre = GetCollisionRec(j->ret, o->ret);
                 
-                if (retSobre.height < retSobre.width) {
+                if (retSobre.height < retSobre.width + 2) {
                     if (j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2) {
                         j->ret.y = o->ret.y - j->ret.height + 2;
                         j->noChao = true;
@@ -511,7 +515,7 @@ static void resolverColisaoJogadorMapaY(GameWorld *gw, float delta) {
                 Rectangle retSobre = GetCollisionRec(j->ret, o->ret);
                 
                 // Ficar de olho pra ver se funciona, correção meio meia boca
-                if (retSobre.height < retSobre.width) {
+                if (retSobre.height < retSobre.width + 2) {
                     if (j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2) {
                         j->ret.y = o->ret.y - j->ret.height + (o->vel.y * delta);
                         j->noChao = true;

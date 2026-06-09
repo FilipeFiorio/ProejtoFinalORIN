@@ -164,7 +164,7 @@ void drawGameWorld( GameWorld *gw ) {
 
             drawTextAlinhado("Mr. Guzão", 200, 72, WHITE, CENTRO);
             drawTextAlinhado("[1] SinglePlayer", 500, 25, WHITE, CENTRO);
-            drawTextAlinhado("[2] SinglePlayer", 550, 25, GRAY, CENTRO);
+            drawTextAlinhado("[2] MultiPlayer", 550, 25, GRAY, CENTRO);
 
             break;
 
