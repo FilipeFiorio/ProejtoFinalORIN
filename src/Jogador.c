@@ -373,7 +373,6 @@ void desenharJogador(Jogador *j) {
     QuadroAnimacao *quadro = getQuadroAnimacaoAtualJogador(j);
     desenharAnimacaoJogador(j, quadro, j->congelado ? BLUE : WHITE);
 
-        
 }
 
 /**
@@ -643,12 +642,6 @@ static void verificarColisaoJogadorItem(GameWorld *gw) {
 
 }
 
-// Atualmente verifica apenas se há colisão pela esquerda, direita e por cima
-// por cima apenas ve se a vel.x é maior que zero
-// se for > 0 o jogador está em cima do inimigo
-//Utiliza a mesma logica com a colisao com o mapa
-
-// Corrigir logica ao bater na parte inferiori  de um inimigo - acho que ta feito
 static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
     Jogador *j = gw->mapa->jogador;
@@ -662,31 +655,21 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
             InimigoNormal *i = (InimigoNormal*) inimigo->objeto;
 
-            if (CheckCollisionRecs(j->ret, i->ret) && i->estado == INIMIGO_NORMAL_ANDANDO) {
+            if(!i->estaVivo || i->estado == INIMIGO_NORMAL_MORRENDO) {
+                el = el->proximo;
+                continue;
+            }
 
-                Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
+            if (CheckCollisionRecs(j->ret, i->ret)) {
 
-                if(retSobreposicao.height < retSobreposicao.width + 5) {
-                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
+                if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
                         i->vel = (Vector2) {0};
                         i->estado = INIMIGO_NORMAL_MORRENDO;
                         j->vel.y = -j->vel.y * 0.75f;
-                    } else {
-                        j->ret.y = i->ret.y + j->ret.height;
-                        j->vel.y = i->vel.y;
-                        j->estado = JOGADOR_MORRENDO;
-                    }
                 } else {
-
-                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                        j->ret.x = i->ret.x + i->ret.width;
-                    } else {
-                        j->ret.x = i->ret.x - j->ret.width;
-                    }
                     j->estado = JOGADOR_MORRENDO;
-
                 }
-
+                
                 return;
             }
 
@@ -694,29 +677,19 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
             InimigoDash *i = (InimigoDash*) inimigo->objeto;
 
-            if (CheckCollisionRecs(j->ret, i->ret) && (i->estado == INIMIGO_DASH_ANDANDO || i->estado == INIMIGO_DASH_DASHANDO)) {
+            if(!i->estaVivo || i->estado == INIMIGO_DASH_MORRENDO) {
+                el = el->proximo;
+                continue;
+            }
 
-                Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
+            if (CheckCollisionRecs(j->ret, i->ret)) {
 
-                if(retSobreposicao.height < retSobreposicao.width + 5) {
-                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
-                        i->velXInicial = 0;
-                        i->estado = INIMIGO_DASH_MORRENDO;
-                        j->vel.y = -j->vel.y * 0.75f;
-                    } else {
-                        j->ret.y = i->ret.y + j->ret.height;
-                        j->vel.y = i->vel.y;
-                        j->estado = JOGADOR_MORRENDO;
-                    }
+                if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
+                    i->velXInicial = 0;
+                    i->estado = INIMIGO_DASH_MORRENDO;
+                    j->vel.y = -j->vel.y * 0.75f;
                 } else {
-
-                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                        j->ret.x = i->ret.x + i->ret.width;
-                    } else {
-                        j->ret.x = i->ret.x - j->ret.width;
-                    }
                     j->estado = JOGADOR_MORRENDO;
-
                 }
 
                 return;
@@ -726,66 +699,35 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
             InimigoVoador *i = (InimigoVoador*) inimigo->objeto;
 
-            if (CheckCollisionRecs(j->ret, i->ret) && i->estado == INIMIGO_VOADOR_VOANDO) {
+            if(!i->estaVivo || i->estado == INIMIGO_VOADOR_MORRENDO) {
+                el = el->proximo;
+                continue;
+            }
 
-                Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
+            if (CheckCollisionRecs(j->ret, i->ret)) {
 
-                //talvez melhorar
-                if(retSobreposicao.height < retSobreposicao.width + 5) {
-                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
-                        i->vel = (Vector2) {0};
-                        i->estado = INIMIGO_VOADOR_MORRENDO;
-                        j->vel.y = -j->vel.y * 0.75f;
-                    } else {
-                        j->ret.y = i->ret.y + j->ret.height;
-                        j->vel.y = i->vel.y;
-                        j->estado = JOGADOR_MORRENDO;
-                    }
+
+                if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
+                    i->vel = (Vector2) {0};
+                    i->estado = INIMIGO_VOADOR_MORRENDO;
+                    j->vel.y = -j->vel.y * 0.75f;
                 } else {
-
-                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                        j->ret.x = i->ret.x + i->ret.width;
-                    } else {
-                        j->ret.x = i->ret.x - j->ret.width;
-                    }
                     j->estado = JOGADOR_MORRENDO;
-
                 }
-
+               
                 return;
             }
 
 
-            //A partir daqui não é possivel matar inimigos entao verificamos apenas se ha colisao
-            //nao importando o estado do inimigo
+        // A partir daqui não é possivel matar inimigos entao verificamos apenas se ha colisao
+        // nao importando o estado do inimigo
         } else if (inimigo->tipo == INIMIGO_ESPINHO) {
 
             InimigoEspinho *i = (InimigoEspinho*) inimigo->objeto;
 
             if (CheckCollisionRecs(j->ret, i->ret)) {
 
-                Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
-
-                //talvez melhorar
-                if(retSobreposicao.height < retSobreposicao.width + 5) {
-                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
-                        j->ret.y = i->ret.y - j->ret.height;
-                        j->estado = JOGADOR_MORRENDO;
-                    } else {
-                        j->ret.y = i->ret.y + j->ret.height;
-                        j->vel.y = i->vel.y;
-                        j->estado = JOGADOR_MORRENDO;
-                    }
-                } else {
-
-                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                        j->ret.x = i->ret.x + i->ret.width;
-                    } else {
-                        j->ret.x = i->ret.x - j->ret.width;
-                    }
-                    j->estado = JOGADOR_MORRENDO;
-
-                }
+                j->estado = JOGADOR_MORRENDO;
 
                 return;
             }
@@ -796,29 +738,8 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
             if (CheckCollisionRecs(j->ret, i->ret)) {
 
-                Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
-
-                //talvez melhorar
-                if(retSobreposicao.height < retSobreposicao.width + 5) {
-                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
-                        j->ret.y = i->ret.y - j->ret.height;
-                        j->estado = JOGADOR_MORRENDO;
-                    } else {
-                        j->ret.y = i->ret.y + j->ret.height;
-                        j->vel.y = i->vel.y;
-                        j->estado = JOGADOR_MORRENDO;
-                    }
-                } else {
-
-                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                        j->ret.x = i->ret.x + i->ret.width;
-                    } else {
-                        j->ret.x = i->ret.x - j->ret.width;
-                    }
-                    j->estado = JOGADOR_MORRENDO;
-
-                }
-
+                j->estado = JOGADOR_MORRENDO;
+                
                 return;
             }
 
@@ -828,58 +749,19 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
             if (CheckCollisionRecs(j->ret, i->ret)) {
 
-                Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
-
-                //talvez melhorar
-                if(retSobreposicao.height < retSobreposicao.width + 5) {
-                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
-                        j->ret.y = i->ret.y - j->ret.height;
-                        j->estado = JOGADOR_MORRENDO;
-                    } else {
-                        j->ret.y = i->ret.y + j->ret.height;
-                        j->estado = JOGADOR_MORRENDO;
-                    }
-                } else {
-
-                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                        j->ret.x = i->ret.x + i->ret.width;
-                    } else {
-                        j->ret.x = i->ret.x - j->ret.width;
-                    }
-                    j->estado = JOGADOR_MORRENDO;
-
-                }
+                j->estado = JOGADOR_MORRENDO;
 
                 return;
             }
+
 
         } else if (inimigo->tipo == INIMIGO_PLANTA) {
 
             InimigoPlanta *i = (InimigoPlanta*) inimigo->objeto;
 
             if (CheckCollisionRecs(j->ret, i->ret)) {
-
-                Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
-
-                //talvez melhorar
-                if(retSobreposicao.height < retSobreposicao.width + 5) {
-                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
-                        j->ret.y = i->ret.y - j->ret.height;
-                        j->estado = JOGADOR_MORRENDO;
-                    } else {
-                        j->ret.y = i->ret.y + j->ret.height;
-                        j->estado = JOGADOR_MORRENDO;
-                    }
-                } else {
-
-                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                        j->ret.x = i->ret.x + i->ret.width;
-                    } else {
-                        j->ret.x = i->ret.x - j->ret.width;
-                    }
-                    j->estado = JOGADOR_MORRENDO;
-
-                }
+                
+                j->estado == JOGADOR_MORRENDO;
 
                 return;
             }
@@ -896,27 +778,7 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
             if (CheckCollisionRecs(j->ret, i->ret)) {
 
-                Rectangle retSobreposicao = GetCollisionRec(j->ret, i->ret);
-
-                //talvez melhorar
-                if(retSobreposicao.height < retSobreposicao.width + 5) {
-                    if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
-                        j->ret.y = i->ret.y - j->ret.height;
-                        j->estado = JOGADOR_MORRENDO;
-                    } else {
-                        j->ret.y = i->ret.y + j->ret.height;
-                        j->estado = JOGADOR_MORRENDO;
-                    }
-                } else {
-
-                    if (j->ret.x + j->ret.width / 2 > i->ret.x + i->ret.width / 2) {
-                        j->ret.x = i->ret.x + i->ret.width;
-                    } else {
-                        j->ret.x = i->ret.x - j->ret.width;
-                    }
-                    j->estado = JOGADOR_MORRENDO;
-
-                }
+                j->estado = JOGADOR_MORRENDO;
 
                 return;
             }
