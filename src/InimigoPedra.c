@@ -155,13 +155,18 @@ void atualizarInimigoPedra(InimigoPedra *inimigo, GameWorld *gw, float delta) {
     }
 
     if(CheckCollisionRecs(ret, retJogador) && !inimigo->retornando) {
+
         if(jogadorEmbaixo(gw->mapa->jogador, inimigo)) {
             inimigo->estado = INIMIGO_PEDRA_DESCENDO;
             inimigo->velAtual = inimigo->vel.y;
-        } else if(retJogador.x < inimigo->ret.x) {
-            inimigo->estado = INIMIGO_PEDRA_OLHO_ESQUERDO;
-        } else if(retJogador.x > inimigo->ret.x) {
-            inimigo->estado = INIMIGO_PEDRA_OLHO_DIREITO;
+        } 
+        
+        if(inimigo->estado != INIMIGO_PEDRA_DESCENDO) {
+            if(retJogador.x < inimigo->ret.x) {
+                inimigo->estado = INIMIGO_PEDRA_OLHO_ESQUERDO;
+            } else if(retJogador.x > inimigo->ret.x) {
+                inimigo->estado = INIMIGO_PEDRA_OLHO_DIREITO;
+            }
         }
     } else {
         inimigo->estado = INIMIGO_PEDRA_PARADO;

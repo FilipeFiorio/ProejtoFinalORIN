@@ -539,7 +539,11 @@ static void resolverColisaoJogadorMapaY(GameWorld *gw, float delta) {
                     if (j->ret.y + j->ret.height / 2 < o->ret.y + o->ret.height / 2) {
                         j->ret.y = o->ret.y - j->ret.height + 2;
                         j->noChao = true;
-                        j->congelado = true;
+
+                        if(!j->congelado) {
+                            j->congelado = true;
+                        }
+                        
                     } else {
                         j->ret.y = o->ret.y + o->ret.height;
                     }
@@ -664,6 +668,7 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
                 if(retSobreposicao.height < retSobreposicao.width + 5) {
                     if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
+                        i->vel = (Vector2) {0};
                         i->estado = INIMIGO_NORMAL_MORRENDO;
                         j->vel.y = -j->vel.y * 0.75f;
                     } else {
@@ -695,6 +700,7 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
                 if(retSobreposicao.height < retSobreposicao.width + 5) {
                     if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
+                        i->velXInicial = 0;
                         i->estado = INIMIGO_DASH_MORRENDO;
                         j->vel.y = -j->vel.y * 0.75f;
                     } else {
@@ -727,6 +733,7 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
                 //talvez melhorar
                 if(retSobreposicao.height < retSobreposicao.width + 5) {
                     if (j->vel.y > 0 && j->ret.y + j->ret.height / 2 < i->ret.y + i->ret.height / 2) {
+                        i->vel = (Vector2) {0};
                         i->estado = INIMIGO_VOADOR_MORRENDO;
                         j->vel.y = -j->vel.y * 0.75f;
                     } else {
