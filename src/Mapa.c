@@ -493,10 +493,13 @@ void destruirMapa(Mapa *m) {
 
 void desenharMapa(Mapa *m) {
     
+    if(m->jogador != NULL) {
+        desenharJogador(m->jogador);
+    }
+    
     ElementoMapa *el = NULL;
 
     el = m->obstaculos;
-    
     while(el != NULL) {
         desenharObstaculo((Obstaculo*) el->objeto);
         el = el->proximo;
@@ -514,9 +517,6 @@ void desenharMapa(Mapa *m) {
         el = el->proximo;
     }
 
-    if(m->jogador != NULL) {
-        desenharJogador(m->jogador);
-    }
     
 }
 

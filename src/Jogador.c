@@ -510,8 +510,7 @@ static void resolverColisaoJogadorMapaY(GameWorld *gw, float delta) {
                     j->ret.y = o->ret.y + o->ret.height;
                 }
                 j->vel.y = 0;
-                
-
+            
             }
             
         } else if (obs->tipo == OBSTACULO_MOVEL) {
@@ -724,7 +723,7 @@ static void verificarColisaoJogadorInimigo(GameWorld *gw) {
 
             if (CheckCollisionRecs(j->ret, i->ret)) {
                 
-                j->estado == JOGADOR_MORRENDO;
+                j->estado = JOGADOR_MORRENDO;
 
                 return;
             }

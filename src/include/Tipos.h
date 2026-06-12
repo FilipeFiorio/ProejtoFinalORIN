@@ -9,7 +9,9 @@ typedef enum EstadoJogo {
     ESTADO_JOGO_GAMEPLAY,
     ESTADO_JOGO_PAUSE,
     ESTADO_JOGO_GAME_OVER,
-    ESTADO_JOGO_FIM
+    ESTADO_JOGO_FIM,
+    ESTADO_JOGO_FADE_IN,
+    ESTADO_JOGO_FADE_OUT
 } EstadoJogo;
 
 typedef enum EstadoJogador {
@@ -463,5 +465,6 @@ typedef struct GameWorld {
     float gravidade;
     int timerJogo;
     int faseAtual;
+    float alphaTransicao;
 }GameWorld;
 

@@ -33,6 +33,7 @@ static void inicializarGW(GameWorld *gw);
 static void desenharHud(GameWorld *gw);
 static void passarFase(GameWorld *gw);
 
+
 /**
  * @brief Creates a dinamically allocated GameWorld struct instance.
  */
@@ -117,6 +118,29 @@ void updateGameWorld( GameWorld *gw, float delta ) {
             }
 
             break;
+        
+        case ESTADO_JOGO_FADE_IN:
+            
+            gw->alphaTransicao -= 5;
+
+
+            if (gw->alphaTransicao <= 0) {
+                gw->alphaTransicao = 0;
+                gw->estado = ESTADO_JOGO_GAMEPLAY;
+            }
+
+            break;
+        
+        case ESTADO_JOGO_FADE_OUT:
+
+            gw->alphaTransicao += 5;
+
+            if (gw->alphaTransicao >= 255) {
+                gw->alphaTransicao = 255;
+                gw->estado = ESTADO_JOGO_FADE_IN;
+            }
+
+            break;
 
         default:
             break;
@@ -195,6 +219,19 @@ void drawGameWorld( GameWorld *gw ) {
 
             drawTextAlinhado("Você Venceu!!!", 200, 50, WHITE, CENTRO);
             drawTextAlinhado("Aperte ENTER para voltar para o início", 400, 25, WHITE, CENTRO);
+
+            break;
+
+        case ESTADO_JOGO_FADE_IN:
+        case ESTADO_JOGO_FADE_OUT:
+
+            DrawRectangle(
+                0,
+                0,
+                GetScreenWidth(),
+                GetScreenHeight(),
+                (Color){0, 0, 0, gw->alphaTransicao}
+            );
 
             break;
 
@@ -326,6 +363,7 @@ static void inicializarGW(GameWorld *gw) {
     gw->mapa = carregarMapa("resources/mapas/fase1.txt");
     gw->gravidade = 600;
     gw->timerJogo = 200000;
+    gw->alphaTransicao = 0;
     gw->estado = ESTADO_JOGO_INICIO;
 
     gw->camera = (Camera2D) {
@@ -360,15 +398,18 @@ static void passarFase(GameWorld *gw) {
 
     int vidas = gw->mapa->jogador->vidas;
     int moedas = gw->mapa->jogador->moedas;
-
+    
     destruirMapa(gw->mapa);
 
+    
     char caminhoMapa[100];
     sprintf(caminhoMapa, "resources/mapas/fase%d.txt", gw->faseAtual);
     gw->mapa = carregarMapa(caminhoMapa);
-
+    
     gw->timerJogo = 200000;
     gw->mapa->jogador->vidas = vidas;
     gw->mapa->jogador->moedas = moedas;
+    gw->alphaTransicao = 0;
+    gw->estado = ESTADO_JOGO_FADE_OUT;
 
 }
