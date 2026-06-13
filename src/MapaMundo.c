@@ -69,8 +69,10 @@ void desenharMapaMundo(MapaMundo *mapaMundo) {
 
 void destruirMapaMundo(MapaMundo *mapaMundo) {
 
-    //dps;
-
+    if(mapaMundo != NULL) {
+        free(mapaMundo->fases);
+        free(mapaMundo);
+    }
 }
 
 void atualizarMapaMundo(GameWorld *gw, float delta) {

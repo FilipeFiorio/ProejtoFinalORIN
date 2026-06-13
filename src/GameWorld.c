@@ -51,8 +51,17 @@ GameWorld* createGameWorld( void ) {
  * @brief Destroys a GameWindow object and its dependecies.
  */
 void destroyGameWorld( GameWorld *gw ) {
-    destruirMapa(gw->mapa);
-    free( gw );
+
+    if (gw->mapa != NULL) {
+        destruirMapa(gw->mapa);
+    }
+
+    if (gw->mapaMundo != NULL) {
+        destruirMapaMundo(gw->mapaMundo);
+    }
+
+    free(gw);
+
 }
 
 /**
@@ -103,12 +112,11 @@ void updateGameWorld( GameWorld *gw, float delta ) {
                 gw->estado = ESTADO_JOGO_GAMEPLAY;
             }
             
-            break;;
+            break;
 
         case ESTADO_JOGO_INICIO:
 
             if(IsKeyPressed(KEY_ONE)) {
-                inicializarGW(gw);
                 gw->estado = ESTADO_JOGO_MAPA_MUNDO;
             }
 
@@ -342,6 +350,7 @@ static void verificarGameOver(GameWorld *gw) {
 
     if(gw->mapa->jogador->vidas < 0) {
         destruirMapa(gw->mapa);
+        gw->mapa = NULL;
         gw->estado = ESTADO_JOGO_GAME_OVER;
     }
 
@@ -373,6 +382,11 @@ static void reiniciarJogo(GameWorld *gw) {
 
 static void inicializarGW(GameWorld *gw) {
 
+    if (gw->mapaMundo != NULL) {
+        destruirMapaMundo(gw->mapaMundo);
+    }
+
+    
     gw->faseAtual = 1;
     gw->mapaMundo = criarMapaMundo(3);
     gw->gravidade = 600;
@@ -405,7 +419,6 @@ static void desenharHud(GameWorld *gw) {
 
 static void passarFase(GameWorld *gw) {
 
-    // Salva antes de destruir o mapa
     gw->vidasSalvas = gw->mapa->jogador->vidas;
     gw->moedasSalvas = gw->mapa->jogador->moedas;
 
