@@ -116,7 +116,7 @@ void updateGameWorld( GameWorld *gw, float delta ) {
 
         case ESTADO_JOGO_INICIO:
 
-            if(IsKeyPressed(KEY_ONE)) {
+            if(IsKeyPressed(KEY_ENTER)) {
                 gw->estado = ESTADO_JOGO_MAPA_MUNDO;
             }
 
@@ -203,7 +203,7 @@ void drawGameWorld( GameWorld *gw ) {
 
             ClearBackground(BLACK);
             drawTextAlinhado("GAME OVER", 200, 50, WHITE, CENTRO);
-            drawTextAlinhado("Aperte ENTER para continuar", 400, 25, WHITE, CENTRO);
+            drawTextAlinhado("Aperte [ENTER] para continuar", 400, 25, WHITE, CENTRO);
 
             break;
 
@@ -214,8 +214,7 @@ void drawGameWorld( GameWorld *gw ) {
             DrawTexture(rm.texturaInicio, 0, 0, WHITE);
 
             drawTextAlinhado("Mr. Guzão", 200, 72, WHITE, CENTRO);
-            drawTextAlinhado("[1] SinglePlayer", 500, 25, WHITE, CENTRO);
-            drawTextAlinhado("[2] MultiPlayer", 550, 25, GRAY, CENTRO);
+            drawTextAlinhado("Aperte [ENTER] para iniciar", 500, 25, WHITE, CENTRO);
 
             break;
 
